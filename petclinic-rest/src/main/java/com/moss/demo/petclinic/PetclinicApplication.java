@@ -1,12 +1,12 @@
-package org.springframework.samples.petclinic;
+package com.moss.demo.petclinic;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class PetClinicApplication {
+public class PetclinicApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(PetClinicApplication.class, args);
+		SpringApplication.run(PetclinicApplication.class, args);
 	}
 }
