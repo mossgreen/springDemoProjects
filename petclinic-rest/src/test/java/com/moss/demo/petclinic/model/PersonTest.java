@@ -2,10 +2,10 @@ package com.moss.demo.petclinic.model;
 
 import org.junit.Test;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.validation.Validator;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.Validator;
 import java.util.Locale;
 import java.util.Set;
 
