@@ -44,7 +44,7 @@ public class OwnerRestController {
         Collection<Owner> owners = this.clinicService.findAllOwners();
 
         if (owners.isEmpty()) {
-            return new ResponseEntity<Collection<Owner>>(HttpStatus.NOT_FOUND;
+            return new ResponseEntity<Collection<Owner>>(HttpStatus.NOT_FOUND);
         }
 
         return new ResponseEntity<Collection<Owner>>(owners, HttpStatus.OK);
