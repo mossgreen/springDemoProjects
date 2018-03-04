@@ -9,6 +9,7 @@ import com.moss.demo.petclinic.repository.PetRepository;
 import com.moss.demo.petclinic.repository.VisitRepository;
 import com.moss.demo.petclinic.util.EntityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -16,10 +17,14 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.orm.ObjectRetrievalFailureException;
+import org.springframework.stereotype.Repository;
 
 import javax.sql.DataSource;
 import java.util.*;
 
+
+@Repository
+@Profile("jdbc")
 public class JdbcPetRepositoryImpl implements PetRepository{
 
 
