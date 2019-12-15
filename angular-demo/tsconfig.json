@@ -2,13 +2,13 @@
   "compileOnSave": false,
   "compilerOptions": {
     "baseUrl": "./",
-    "outDir": "./dist/out-tsc",
+    "outDir": "target/webapp",
     "sourceMap": true,
     "declaration": false,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
-    "target": "es5",
+    "target": "es2015",
     "typeRoots": [
       "node_modules/@types"
     ],
@@ -16,5 +16,13 @@
       "es2017",
       "dom"
     ]
-  }
+  },
+  "include": [
+    "src/main/webapp/main.ts",
+    "src/main/webapp/polyfills.ts",
+    "src/main/webapp/app"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

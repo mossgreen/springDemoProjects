@@ -40,6 +40,7 @@ build/
 
 # dependencies
 /node_modules
+/node
 
 # IDEs and editors
 /.idea
