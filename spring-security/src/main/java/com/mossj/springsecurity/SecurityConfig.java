@@ -3,6 +3,9 @@ package com.mossj.springsecurity;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.configuration.EnableGlobalAuthentication;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.User;
@@ -12,59 +15,25 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Configuration
     @Order(1)
-    public static class AdminSecurityConfig extends WebSecurityConfigurerAdapter {
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/admin/**")
-                .authorizeRequests()
-                .antMatchers("/css/**").permitAll()
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest()
-                .authenticated()
-
-                .and()
-                .formLogin()
-                .loginPage("/admin/login")
-                .defaultSuccessUrl("/admin/home")
-                .permitAll()
-
-                .and()
-                .logout()
-                .logoutUrl("/admin/logout")
-                .permitAll();
-
-        }
-    }
-
-    @Configuration
-    @Order(2)
     public static class UserSecurityConfig extends WebSecurityConfigurerAdapter {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.antMatcher("/user/**")
+            http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/css/**").permitAll()
-                .antMatchers("/user/**").hasRole("USER")
+                .antMatchers(HttpMethod.GET, "/employee**").hasAuthority("read")
+                .antMatchers(HttpMethod.DELETE, "/employee/**").hasAuthority("delete")
                 .anyRequest()
                 .authenticated()
-
                 .and()
-                .formLogin()
-                .loginPage("/user/login")
-                .defaultSuccessUrl("/user/home")
-                .permitAll()
-
-                .and()
-                .logout()
-                .logoutUrl("/user/logout")
-                .permitAll();
-
+                .httpBasic();
         }
     }
+
 
     @Bean
     public static PasswordEncoder encoder() {
@@ -74,46 +43,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public UserDetailsService userDetailsService() {
         InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(User.withUsername("user")
-            .password(encoder().encode("123456"))
-            .roles("user")
-            .build());
         manager.createUser(User.withUsername("admin")
             .password(encoder().encode("123456"))
-            .roles("ADMIN")
+            .authorities("read","delete")
+            .build());
+        manager.createUser(User.withUsername("user")
+            .password(encoder().encode("123456"))
+            .authorities("read")
+            .build());
+        manager.createUser(User.withUsername("guest")
+            .password(encoder().encode("123456"))
+            .roles("GUEST")
             .build());
         return manager;
-    }
-
-
-    /*
-    Copy from WebSecurityConfigurerAdapter, now we need to override it
-     */
-//    protected void configure(HttpSecurity http) throws Exception {
-//        logger.debug("Using default configure(HttpSecurity). If subclassed this will potentially override subclass configure(HttpSecurity).");
-//        http.authorizeRequests()
-//            .anyRequest().authenticated()
-//            .and()
-//            .formLogin()
-//            .and()
-//            .httpBasic();
-//    }
-
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-            .anyRequest()
-            .authenticated()
-
-            .and()
-            .formLogin()
-            .loginPage("/loginPage")
-            .permitAll()
-
-            .and()
-            .logout()
-            .logoutUrl("/logoutPage")
-            .logoutSuccessUrl("/loginPage?logout")
-            .permitAll();
     }
 }
