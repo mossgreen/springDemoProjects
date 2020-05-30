@@ -19,7 +19,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
+        http.csrf().ignoringAntMatchers("/h2/**")
+            .and()
+            .headers().frameOptions().sameOrigin()
+            .and()
+            .authorizeRequests()
+            .antMatchers("/h2/**").permitAll()
             .anyRequest()
             .authenticated()
             .and()
