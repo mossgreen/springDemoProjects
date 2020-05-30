@@ -15,47 +15,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 
 @Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Configuration
-    @Order(1)
-    public static class UserSecurityConfig extends WebSecurityConfigurerAdapter {
-        @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            http.csrf().disable()
-                .authorizeRequests()
-                .antMatchers("/home/ip").hasIpAddress("192.168.1.0")
-                .antMatchers(HttpMethod.GET, "/employee**").hasAuthority("read")
-                .antMatchers(HttpMethod.DELETE, "/employee/**").hasAuthority("delete")
-                .anyRequest()
-                .authenticated()
-                .and()
-                .httpBasic();
-        }
+    @Override
+    protected void configure(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+            .anyRequest()
+            .authenticated()
+            .and()
+            .formLogin();
     }
 
-
     @Bean
-    public static PasswordEncoder encoder() {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(User.withUsername("admin")
-            .password(encoder().encode("123456"))
-            .authorities("read","delete")
-            .build());
-        manager.createUser(User.withUsername("user")
-            .password(encoder().encode("123456"))
-            .authorities("read")
-            .build());
-        manager.createUser(User.withUsername("guest")
-            .password(encoder().encode("123456"))
-            .roles("GUEST")
-            .build());
-        return manager;
     }
 }

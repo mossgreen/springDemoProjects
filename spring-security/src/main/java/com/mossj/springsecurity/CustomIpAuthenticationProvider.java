@@ -5,10 +5,12 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+//@Component
 public class CustomIpAuthenticationProvider implements AuthenticationProvider {
 
     private final List<String> ipWhiteList = new ArrayList<>();
