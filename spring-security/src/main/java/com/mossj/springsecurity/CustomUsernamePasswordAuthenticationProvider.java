@@ -6,6 +6,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -14,13 +15,20 @@ import java.util.ArrayList;
 public class CustomUsernamePasswordAuthenticationProvider implements AuthenticationProvider {
 
     final private EmployeeRepo employeeRepo;
+    private LoginAttemptService loginAttemptService;
 
-    public CustomUsernamePasswordAuthenticationProvider(EmployeeRepo employeeRepo) {
+    public CustomUsernamePasswordAuthenticationProvider(EmployeeRepo employeeRepo, LoginAttemptService loginAttemptService) {
         this.employeeRepo = employeeRepo;
+        this.loginAttemptService = loginAttemptService;
     }
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+
+        final WebAuthenticationDetails details = (WebAuthenticationDetails) authentication.getDetails();
+        if (loginAttemptService.isBlocked(details.getRemoteAddress())) {
+            throw new BadCredentialsException("Invalid ip");
+        }
 
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
