@@ -6,7 +6,7 @@ import org.springframework.security.authentication.event.AuthenticationSuccessEv
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.stereotype.Component;
 
-@Component
+//@Component
 public class AuthenticationLoginSuccessEventListener implements ApplicationListener<AuthenticationSuccessEvent> {
 
     private LoginAttemptService loginAttemptService;
