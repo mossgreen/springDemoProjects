@@ -4,8 +4,13 @@ package com.ihobb.gm.admin.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ihobb.gm.baseEntity.AbstractAuditingEntity;
 import com.ihobb.gm.config.Constants;
+import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,81 +30,89 @@ import java.io.Serializable;
 import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
-@EqualsAndHashCode(callSuper = true)
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true,exclude = {"authorities","organizations"})
+@ToString(exclude = {"authorities","organizations"})
 @Data
 @Entity
 @Table(name = "users")
+@NoArgsConstructor
 public class User extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-    @SequenceGenerator(name = "sequenceGenerator")
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "user_id")
     private Long id;
+
+    @org.hibernate.annotations.Type(type = "pg-uuid")
+    @Column(updatable = false, nullable = false)
+    private UUID uuid;
 
     @NotNull
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
-    @Column(length = 50, unique = true, nullable = false)
+    @Column(name = "user_login", length = 50, unique = true, nullable = false)
     private String login;
 
     @JsonIgnore
     @NotNull
     @Size(min = 60, max = 60)
-    @Column(name = "password_hash", length = 60, nullable = false)
+    @Column(name = "user_password_hash", length = 60, nullable = false)
     private String password;
 
     @Size(max = 50)
-    @Column(name = "first_name", length = 50)
+    @Column(name = "user_first_name", length = 50)
     private String firstName;
 
     @Size(max = 50)
-    @Column(name = "last_name", length = 50)
+    @Column(name = "user_last_name", length = 50)
     private String lastName;
 
     @Email
     @Size(min = 5, max = 254)
-    @Column(length = 254, unique = true)
+    @Column(name = "user_email", length = 254, unique = true)
     private String email;
 
     @NotNull
-    @Column(nullable = false)
+    @Column(name = "user_activated", nullable = false)
     private boolean activated = false;
 
     @Size(min = 2, max = 10)
-    @Column(name = "lang_key", length = 10)
+    @Column(name = "user_lang_key", length = 10)
     private String langKey;
 
     @Size(max = 256)
-    @Column(name = "image_url", length = 256)
+    @Column(name = "user_image_url", length = 256)
     private String imageUrl;
 
     @Size(max = 20)
-    @Column(name = "activation_key", length = 20)
+    @Column(name = "user_activation_key", length = 20)
     @JsonIgnore
     private String activationKey;
 
-    @Size(max = 20)
-    @Column(name = "reset_key", length = 20)
-    @JsonIgnore
-    private String resetKey;
-
-    @Column(name = "reset_date")
-    private Instant resetDate = null;
-
+    @Size(max = 1000)
+    @Column(name = "user_description")
     private String description;
 
     @JsonIgnore
     @ManyToMany
     @JoinTable(
-        name = "authority",
-        joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
-        inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "name")})
-//    @BatchSize(size = 20)
+        name = "user_authority",
+        joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id")},
+        inverseJoinColumns = {@JoinColumn(name = "authority_name", referencedColumnName = "authority_name")})
+    @BatchSize(size = 20)
     private Set<Authority> authorities = new HashSet<>();
 
+    @ManyToMany
+    @JoinTable(
+        name = "user_organization",
+        joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id")},
+        inverseJoinColumns = {@JoinColumn(name = "organization_id", referencedColumnName = "organization_id")})
+    @BatchSize(size = 20)
     private Set<Organization> organizations = new HashSet<>();
 
 }

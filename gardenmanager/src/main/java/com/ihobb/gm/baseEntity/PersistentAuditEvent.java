@@ -1,6 +1,7 @@
 package com.ihobb.gm.baseEntity;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -17,13 +18,13 @@ import java.util.Map;
 @Data
 @Entity
 @Table(name = "persistent_audit_event")
+@NoArgsConstructor
 public class PersistentAuditEvent implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @SequenceGenerator(name = "sequenceGenerator")
     @Column(name = "event_id")
     private Long id;
 

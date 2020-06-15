@@ -1,6 +1,9 @@
 package com.ihobb.gm.admin.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,6 +19,9 @@ import java.io.Serializable;
 @Entity
 @Table(name = "authority")
 @Data
+@NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Authority implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -23,6 +29,6 @@ public class Authority implements Serializable {
     @NotNull
     @Size(max = 50)
     @Id
-    @Column(length = 50)
+    @Column(name = "authority_name", length = 50)
     private String name;
 }
