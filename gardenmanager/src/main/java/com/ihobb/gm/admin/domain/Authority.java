@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -22,7 +23,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class Authority implements Serializable {
+public class Authority implements Serializable, GrantedAuthority {
 
     private static final long serialVersionUID = 1L;
 
@@ -31,4 +32,9 @@ public class Authority implements Serializable {
     @Id
     @Column(name = "authority_name", length = 50)
     private String name;
+
+    @Override
+    public String getAuthority() {
+        return name;
+    }
 }
