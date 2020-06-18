@@ -15,8 +15,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.Column;
 import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.UUID;
 
 @SuperBuilder
 @MappedSuperclass
@@ -47,4 +50,19 @@ public abstract class AbstractAuditingEntity implements Serializable {
     @Column(name = "last_modified_date")
     @JsonIgnore
     private Instant lastModifiedDate = Instant.now();
+
+    @org.hibernate.annotations.Type(type = "pg-uuid")
+    @Column(updatable = false, nullable = false)
+    private UUID uuid;
+
+    @PrePersist
+    void onCreate() {
+        this.setCreatedDate(Instant.now());
+        this.setUuid(UUID.randomUUID());
+    }
+
+    @PreUpdate
+    void onUpdate() {
+        this.setLastModifiedDate(Instant.now());
+    }
 }

@@ -20,6 +20,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.validation.constraints.Email;
@@ -48,10 +50,6 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "user_id")
     private Long id;
 
-    @org.hibernate.annotations.Type(type = "pg-uuid")
-    @Column(updatable = false, nullable = false)
-    private UUID uuid;
-
     @NotNull
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
@@ -79,7 +77,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
 
     @NotNull
     @Column(name = "user_activated", nullable = false)
-    private boolean activated = false;
+    private Boolean activated = false;
 
     @Size(min = 2, max = 10)
     @Column(name = "user_lang_key", length = 10)

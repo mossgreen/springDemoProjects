@@ -51,7 +51,6 @@ public class DataLoader implements ApplicationRunner {
             .description("org one ")
             .uuid(UUID.randomUUID())
             .createdBy(0L)
-            .createdDate(Instant.now())
             .users(null)
             .build();
 
@@ -60,7 +59,6 @@ public class DataLoader implements ApplicationRunner {
             .description("org Two ")
             .uuid(UUID.randomUUID())
             .createdBy(0L)
-            .createdDate(Instant.now())
             .users(null)
             .build();
 
@@ -69,7 +67,6 @@ public class DataLoader implements ApplicationRunner {
             .description("org Three ")
             .uuid(UUID.randomUUID())
             .createdBy(0L)
-            .createdDate(Instant.now())
             .users(null)
             .build();
 
@@ -82,9 +79,7 @@ public class DataLoader implements ApplicationRunner {
         final User user1 = User.builder()
             .activated(Boolean.TRUE)
             .createdBy(0L)
-            .uuid(UUID.randomUUID())
             .imageUrl("moss.io/url.jpg")
-            .createdDate(Instant.now())
             .activationKey(UUID.randomUUID().toString().substring(0,20))
             .description("user one")
             .email("one@one.org")
@@ -100,9 +95,7 @@ public class DataLoader implements ApplicationRunner {
         final User user2 = User.builder()
             .activated(Boolean.TRUE)
             .createdBy(0L)
-            .uuid(UUID.randomUUID())
             .imageUrl("moss.io/url2.jpg")
-            .createdDate(Instant.now())
             .activationKey(UUID.randomUUID().toString().substring(0,20))
             .description("user Two")
             .email("two@two.net")
@@ -118,9 +111,7 @@ public class DataLoader implements ApplicationRunner {
         final User user3 = User.builder()
             .activated(Boolean.TRUE)
             .createdBy(0L)
-            .uuid(UUID.randomUUID())
             .imageUrl("moss.io/url3.jpg")
-            .createdDate(Instant.now())
             .activationKey(UUID.randomUUID().toString().substring(0, 20))
             .description("user three")
             .email("three@three.com")

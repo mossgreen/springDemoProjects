@@ -9,7 +9,5 @@ import java.util.List;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    List<User> findAllByLoginAndActivatedEqualsTrue(String login);
-
-    List<User> findAllByEmailAndActivatedEqualsTrue(String email);
+    List<User> findAllByEmailAndActivatedIsTrue(String email);
 }

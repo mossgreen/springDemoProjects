@@ -25,7 +25,7 @@ public class CustomUsernamePasswordAuthenticationProvider implements Authenticat
         String userEmail = authentication.getName();
         String password = authentication.getCredentials().toString();
 
-        final List<User> users = userRepository.findAllByEmailAndActivatedEqualsTrue(userEmail);
+        final List<User> users = userRepository.findAllByEmailAndActivatedIsTrue(userEmail);
 
         if (users.isEmpty()) {
             throw new RuntimeException("failed authentication");
