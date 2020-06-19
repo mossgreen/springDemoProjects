@@ -12,18 +12,7 @@ import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.BatchSize;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
@@ -41,6 +30,10 @@ import java.util.UUID;
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
+@NamedEntityGraph(
+    name = "user-authorities-organizations-graph",
+    attributeNodes = {@NamedAttributeNode("authorities"),@NamedAttributeNode("organizations")}
+)
 public class User extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -53,8 +46,8 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @NotNull
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
-    @Column(name = "user_login", length = 50, unique = true, nullable = false)
-    private String login;
+    @Column(name = "user_name", length = 50, unique = true, nullable = false)
+    private String name;
 
     @JsonIgnore
     @NotNull
@@ -96,6 +89,9 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "user_description")
     private String description;
 
+    @Column(name = "user_current_org_id")
+    private Long currentOrgId;
+
     @JsonIgnore
     @ManyToMany
     @JoinTable(
@@ -109,7 +105,7 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @JoinTable(
         name = "user_organization",
         joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "user_id")},
-        inverseJoinColumns = {@JoinColumn(name = "organization_id", referencedColumnName = "organization_id")})
+        inverseJoinColumns = {@JoinColumn(name = "or_id", referencedColumnName = "org_id")})
     @BatchSize(size = 20)
     private Set<Organization> organizations = new HashSet<>();
 

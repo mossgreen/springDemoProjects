@@ -32,28 +32,32 @@ import java.util.UUID;
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true, exclude = {"users"})
 @Entity
+@Data
 @Table(name = "organization")
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = {"users"})
 public class Organization  extends AbstractAuditingEntity implements Serializable {
 
+    private static final long serialVersionUID = 1L;
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "organization_id")
+    @Column(name = "org_id")
     private Long id;
-
-    @org.hibernate.annotations.Type(type = "pg-uuid")
-    @Column(updatable = false, nullable = false)
-    private UUID uuid;
 
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
-    @Column(name = "organization_name", length = 50, unique = true, nullable = false)
+    @Column(name = "org_name", length = 50, unique = true, nullable = false)
     private String name;
 
+    @Pattern(regexp = Constants.LOGIN_REGEX)
+    @Size(min = 8, max = 8)
+    @Column(name = "org_code", length = 8, unique = true, nullable = false)
+    private String code;
+
     @Size(max = 1000)
-    @Column(name = "organization_description")
+    @Column(name = "org_description")
     private String description;
 
     @ManyToMany(mappedBy = "organizations")

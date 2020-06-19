@@ -16,12 +16,12 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@Configuration
-@EnableJpaRepositories(
-    entityManagerFactoryRef = "adminDataSourceEntityManagerFactory",
-    transactionManagerRef = "adminDataSourceTransactionManager",
-    basePackages = "com.ihobb.gm.admin" )
-@EnableTransactionManagement
+//@Configuration
+//@EnableJpaRepositories(
+//    entityManagerFactoryRef = "adminDataSourceEntityManagerFactory",
+//    transactionManagerRef = "adminDataSourceTransactionManager",
+//    basePackages = "com.ihobb.gm.admin" )
+//@EnableTransactionManagement
 public class AdminEntityManagerFactory {
 
     @Bean

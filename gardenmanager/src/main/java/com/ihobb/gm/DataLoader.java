@@ -48,6 +48,7 @@ public class DataLoader implements ApplicationRunner {
 
         final Organization build1 = Organization.builder()
             .name("orgOne")
+            .code("12345678")
             .description("org one ")
             .uuid(UUID.randomUUID())
             .createdBy(0L)
@@ -56,6 +57,7 @@ public class DataLoader implements ApplicationRunner {
 
         final Organization build2 = Organization.builder()
             .name("orgTwo")
+            .code("12345679")
             .description("org Two ")
             .uuid(UUID.randomUUID())
             .createdBy(0L)
@@ -64,6 +66,7 @@ public class DataLoader implements ApplicationRunner {
 
         final Organization build3 = Organization.builder()
             .name("orgThree")
+            .code("12345610")
             .description("org Three ")
             .uuid(UUID.randomUUID())
             .createdBy(0L)
@@ -80,15 +83,16 @@ public class DataLoader implements ApplicationRunner {
             .activated(Boolean.TRUE)
             .createdBy(0L)
             .imageUrl("moss.io/url.jpg")
-            .activationKey(UUID.randomUUID().toString().substring(0,20))
+            .activationKey(UUID.randomUUID().toString().substring(0, 20))
             .description("user one")
             .email("one@one.org")
             .firstName("firstOne")
             .lastName("lastOne")
             .langKey("EN")
-            .login("OneOne")
+            .name("OneOne")
             .password(password)
-            .organizations(Set.of(build1, build2,build3))
+            .currentOrgId(12345678L)
+            .organizations(Set.of(build1, build2, build3))
             .authorities(Set.of(admin))
             .build();
 
@@ -101,9 +105,10 @@ public class DataLoader implements ApplicationRunner {
             .email("two@two.net")
             .firstName("firstTwo")
             .lastName("lastTwo")
-            .login("Tutu")
+            .name("Tutu")
             .langKey("CH")
             .password(password)
+            .currentOrgId(12345679L)
             .organizations(Set.of(build2))
             .authorities(Set.of(client))
             .build();
@@ -117,9 +122,10 @@ public class DataLoader implements ApplicationRunner {
             .email("three@three.com")
             .firstName("firstThree")
             .lastName("lastThree")
-            .login("ThreePerson")
+            .name("ThreePerson")
             .langKey("EN")
             .password(password)
+            .currentOrgId(123L)
             .organizations(Set.of(build3))
             .authorities(Set.of(guest))
             .build();
