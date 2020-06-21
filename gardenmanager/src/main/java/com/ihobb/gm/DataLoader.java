@@ -91,7 +91,7 @@ public class DataLoader implements ApplicationRunner {
             .langKey("EN")
             .name("OneOne")
             .password(password)
-            .currentOrgId(12345678L)
+            .currentOrgCode("12345678L")
             .organizations(Set.of(build1, build2, build3))
             .authorities(Set.of(admin))
             .build();
@@ -108,7 +108,7 @@ public class DataLoader implements ApplicationRunner {
             .name("Tutu")
             .langKey("CH")
             .password(password)
-            .currentOrgId(12345679L)
+            .currentOrgCode("12345679L")
             .organizations(Set.of(build2))
             .authorities(Set.of(client))
             .build();
@@ -125,7 +125,7 @@ public class DataLoader implements ApplicationRunner {
             .name("ThreePerson")
             .langKey("EN")
             .password(password)
-            .currentOrgId(123L)
+            .currentOrgCode("12345679L")
             .organizations(Set.of(build3))
             .authorities(Set.of(guest))
             .build();

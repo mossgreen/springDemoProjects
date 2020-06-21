@@ -89,8 +89,10 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @Column(name = "user_description")
     private String description;
 
-    @Column(name = "user_current_org_id")
-    private Long currentOrgId;
+    @Pattern(regexp = Constants.CODE_REGEX)
+    @Size(min = 8, max = 8)
+    @Column(name = "user_current_org_code", nullable = true)
+    private String currentOrgCode;
 
     @JsonIgnore
     @ManyToMany

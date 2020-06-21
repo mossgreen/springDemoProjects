@@ -49,8 +49,8 @@ public class CustomUsernamePasswordAuthenticationProvider implements Authenticat
                     List<Organization> all = organizationRepository.findAll();
                     // should show org page
                 } else {
-                    @Pattern(regexp = Constants.LOGIN_REGEX) @Size(min = 8, max = 8) String code = theUser.getOrganizations().stream().filter(org -> org.getId().equals(theUser.getCurrentOrgId()))
-                        .findAny().get().getCode();
+//                    @Pattern(regexp = Constants.LOGIN_REGEX) @Size(min = 8, max = 8) String code = theUser.getOrganizations().stream().filter(org -> org.getId().equals(theUser.getCurrentOrgId()))
+//                        .findAny().get().getCode();
 
                     // create a new datasource?
 

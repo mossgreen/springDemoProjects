@@ -51,7 +51,7 @@ public class Organization  extends AbstractAuditingEntity implements Serializabl
     @Column(name = "org_name", length = 50, unique = true, nullable = false)
     private String name;
 
-    @Pattern(regexp = Constants.LOGIN_REGEX)
+    @Pattern(regexp = Constants.CODE_REGEX)
     @Size(min = 8, max = 8)
     @Column(name = "org_code", length = 8, unique = true, nullable = false)
     private String code;
