@@ -1,6 +1,7 @@
 package com.ihobb.gm.baseEntity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ihobb.gm.utility.Utility;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,6 +18,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.UUID;
@@ -30,6 +32,10 @@ import java.util.UUID;
 public abstract class AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @Size(max = 6, min = 6)
+    @Column(name = "view_id", nullable = false, updatable = false, unique = true)
+    private String viewId;
 
     @CreatedBy
     @Column(name = "created_by", nullable = false, updatable = false)
@@ -59,6 +65,7 @@ public abstract class AbstractAuditingEntity implements Serializable {
     void onCreate() {
         this.setCreatedDate(Instant.now());
         this.setUuid(UUID.randomUUID());
+        this.setViewId(Utility.getRandomNumberString());
     }
 
     @PreUpdate

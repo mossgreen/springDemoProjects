@@ -24,20 +24,9 @@ public class DynamicTenantAwareRoutingDataSource extends AbstractRoutingDataSour
     }
 
     public HikariDataSource buildDataSource(String dataBaseName) {
-//        HikariDataSource dataSource = new HikariDataSource();
-//
-//        dataSource.setInitializationFailTimeout(0);
-//        dataSource.setIdleTimeout(50000L);
-//        dataSource.setMaximumPoolSize(5);
-//        dataSource.setdat("org.postgresql.Driver"); // todo what is source class name?
-//        dataSource.addDataSourceProperty("url", "jdbc:postgresql://127.0.0.1:5432");
-//        dataSource.addDataSourceProperty("username", "postgres");
-//        dataSource.addDataSourceProperty("password", "ihobb");
-
-
 
         Properties datasourceProperties = new Properties();
-        datasourceProperties.put("url", "jdbc:postgresql://127.0.0.1:5432/admin");
+        datasourceProperties.put("url", "jdbc:postgresql://127.0.0.1:5432" + dataBaseName);
         datasourceProperties.put("user", "postgres");
         datasourceProperties.put("password", "ihobb");
         datasourceProperties.put("driverClassName", "org.postgresql.Driver");
@@ -45,12 +34,11 @@ public class DynamicTenantAwareRoutingDataSource extends AbstractRoutingDataSour
         Properties hikariConfigProperties = new Properties();
 
         hikariConfigProperties.put("poolName","ProjectsDBPool");
-        hikariConfigProperties.put("jdbcUrl","jdbc:postgresql://127.0.0.1:5432/admin");
+        hikariConfigProperties.put("jdbcUrl", "jdbc:postgresql://127.0.0.1:5432/" + dataBaseName);
         hikariConfigProperties.put("driverClassName","org.postgresql.Driver");
 
-//        hikariConfigProperties.put("minimumIdle",     hikariMinimumIdleConnections);
-//        hikariConfigProperties.put("maximumPoolSize", hikariMaximumPoolSize);
-//        hikariConfigProperties.put("idleTimeout",     hikariIdleTimeout);
+//        hikariConfigProperties.put("maximumPoolSize", 5);
+//        hikariConfigProperties.put("idleTimeout",     50000);
         hikariConfigProperties.put("dataSourceProperties", datasourceProperties);
 
         HikariConfig hc = new HikariConfig(hikariConfigProperties);

@@ -6,6 +6,7 @@ import com.ihobb.gm.admin.domain.User;
 import com.ihobb.gm.admin.repository.AuthorityRepository;
 import com.ihobb.gm.admin.repository.OrganizationRepository;
 import com.ihobb.gm.admin.repository.UserRepository;
+import com.ihobb.gm.utility.Utility;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -51,6 +52,7 @@ public class DataLoader implements ApplicationRunner {
             .code("12345678")
             .description("org one ")
             .uuid(UUID.randomUUID())
+            .viewId(Utility.getRandomNumberString())
             .createdBy(0L)
             .users(null)
             .build();
@@ -59,6 +61,7 @@ public class DataLoader implements ApplicationRunner {
             .name("orgTwo")
             .code("12345679")
             .description("org Two ")
+            .viewId(Utility.getRandomNumberString())
             .uuid(UUID.randomUUID())
             .createdBy(0L)
             .users(null)
@@ -69,6 +72,7 @@ public class DataLoader implements ApplicationRunner {
             .code("12345610")
             .description("org Three ")
             .uuid(UUID.randomUUID())
+            .viewId(Utility.getRandomNumberString())
             .createdBy(0L)
             .users(null)
             .build();
@@ -85,13 +89,14 @@ public class DataLoader implements ApplicationRunner {
             .imageUrl("moss.io/url.jpg")
             .activationKey(UUID.randomUUID().toString().substring(0, 20))
             .description("user one")
+            .viewId(Utility.getRandomNumberString())
             .email("one@one.org")
             .firstName("firstOne")
             .lastName("lastOne")
             .langKey("EN")
             .name("OneOne")
             .password(password)
-            .currentOrgCode("12345678L")
+            .currentOrgCode("12345678")
             .organizations(Set.of(build1, build2, build3))
             .authorities(Set.of(admin))
             .build();
@@ -104,11 +109,12 @@ public class DataLoader implements ApplicationRunner {
             .description("user Two")
             .email("two@two.net")
             .firstName("firstTwo")
+            .viewId(Utility.getRandomNumberString())
             .lastName("lastTwo")
             .name("Tutu")
             .langKey("CH")
             .password(password)
-            .currentOrgCode("12345679L")
+            .currentOrgCode("12345678")
             .organizations(Set.of(build2))
             .authorities(Set.of(client))
             .build();
@@ -125,7 +131,8 @@ public class DataLoader implements ApplicationRunner {
             .name("ThreePerson")
             .langKey("EN")
             .password(password)
-            .currentOrgCode("12345679L")
+            .currentOrgCode("12345678")
+            .viewId(Utility.getRandomNumberString())
             .organizations(Set.of(build3))
             .authorities(Set.of(guest))
             .build();

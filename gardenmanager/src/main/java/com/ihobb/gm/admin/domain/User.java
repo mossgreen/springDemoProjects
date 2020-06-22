@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.BatchSize;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -34,11 +35,12 @@ import java.util.UUID;
     name = "user-authorities-organizations-graph",
     attributeNodes = {@NamedAttributeNode("authorities"),@NamedAttributeNode("organizations")}
 )
-public class User extends AbstractAuditingEntity implements Serializable {
+public class User extends AbstractAuditingEntity implements UserDetails, Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
+    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "user_id")
     private Long id;
@@ -112,4 +114,28 @@ public class User extends AbstractAuditingEntity implements Serializable {
     @BatchSize(size = 20)
     private Set<Organization> organizations = new HashSet<>();
 
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return this.activated;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return this.activated;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return this.activated;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return this.activated;
+    }
 }

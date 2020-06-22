@@ -1,5 +1,6 @@
 package com.ihobb.gm.admin.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ihobb.gm.admin.repository.OrganizationRepository;
 import com.ihobb.gm.baseEntity.AbstractAuditingEntity;
 import com.ihobb.gm.config.Constants;
@@ -42,6 +43,7 @@ public class Organization  extends AbstractAuditingEntity implements Serializabl
     private static final long serialVersionUID = 1L;
 
     @Id
+    @JsonIgnore
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "org_id")
     private Long id;
