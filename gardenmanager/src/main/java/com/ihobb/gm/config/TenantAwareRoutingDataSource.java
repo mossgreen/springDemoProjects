@@ -20,7 +20,7 @@ public class DynamicTenantAwareRoutingDataSource extends AbstractRoutingDataSour
 
     public DynamicTenantAwareRoutingDataSource(String databaseName) {
         final HikariDataSource dataSource = buildDataSource(databaseName);
-        TenantDataSourceContextHolder.setDataSourceContext(dataSource);
+        DynamicDataSourceContextHolder.setDataSourceContext(dataSource);
     }
 
     public HikariDataSource buildDataSource(String dataBaseName) {
@@ -52,7 +52,7 @@ public class DynamicTenantAwareRoutingDataSource extends AbstractRoutingDataSour
 
     @Override
     protected Object determineCurrentLookupKey() {
-        return TenantDataSourceContextHolder.getDataSourceContext();
+        return DynamicDataSourceContextHolder.getDataSourceContext();
     }
 
     @Override
