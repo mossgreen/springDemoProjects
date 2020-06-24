@@ -5,6 +5,7 @@ import com.ihobb.gm.admin.domain.Organization;
 import com.ihobb.gm.admin.domain.User;
 import com.ihobb.gm.admin.repository.OrganizationRepository;
 import com.ihobb.gm.admin.repository.UserRepository;
+import com.ihobb.gm.admin.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,11 +16,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final OrganizationRepository organizationRepository;
 
-    public AdminController(UserRepository userRepository, OrganizationRepository organizationRepository) {
-        this.userRepository = userRepository;
+    public AdminController(UserService userService, OrganizationRepository organizationRepository) {
+        this.userService = userService;
         this.organizationRepository = organizationRepository;
     }
 

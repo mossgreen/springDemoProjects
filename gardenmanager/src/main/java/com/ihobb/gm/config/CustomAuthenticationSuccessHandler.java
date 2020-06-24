@@ -1,6 +1,6 @@
 package com.ihobb.gm.config;
 
-import com.ihobb.gm.admin.domain.Authority;
+import com.ihobb.gm.admin.domain.User;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Set;
 
 @Configuration
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
@@ -33,8 +32,16 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
         if (isAdmin) {
             redirectUrl = "/admin";
-        }
+        } else {
+            // switch datasource to the client database and get all gardens it has
+            // create datasource for current client,
 
+            final User user = (User) authentication.getPrincipal();
+
+            final String orgCode = user.getCurrentOrgCode();
+            TenantAwareRoutingDataSource ds = new TenantAwareRoutingDataSource(orgCode);
+            DynamicDataSourceContextHolder.setDataSourceContext(ds);
+        }
         new DefaultRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }
 }

@@ -9,6 +9,7 @@ import com.ihobb.gm.admin.repository.UserRepository;
 import com.ihobb.gm.utility.Utility;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import java.time.Instant;
@@ -49,7 +50,7 @@ public class DataLoader implements ApplicationRunner {
 
         final Organization build1 = Organization.builder()
             .name("orgOne")
-            .code("12345678")
+            .code("ihobdb01")
             .description("org one ")
             .uuid(UUID.randomUUID())
             .viewId(Utility.getRandomNumberString())
@@ -59,7 +60,7 @@ public class DataLoader implements ApplicationRunner {
 
         final Organization build2 = Organization.builder()
             .name("orgTwo")
-            .code("12345679")
+            .code("ihobdb02")
             .description("org Two ")
             .viewId(Utility.getRandomNumberString())
             .uuid(UUID.randomUUID())
@@ -69,7 +70,7 @@ public class DataLoader implements ApplicationRunner {
 
         final Organization build3 = Organization.builder()
             .name("orgThree")
-            .code("12345610")
+            .code("ihobdb03")
             .description("org Three ")
             .uuid(UUID.randomUUID())
             .viewId(Utility.getRandomNumberString())
@@ -96,7 +97,7 @@ public class DataLoader implements ApplicationRunner {
             .langKey("EN")
             .name("OneOne")
             .password(password)
-            .currentOrgCode("12345678")
+            .currentOrgCode("ihobdb03")
             .organizations(Set.of(build1, build2, build3))
             .authorities(Set.of(admin))
             .build();
@@ -114,7 +115,7 @@ public class DataLoader implements ApplicationRunner {
             .name("Tutu")
             .langKey("CH")
             .password(password)
-            .currentOrgCode("12345678")
+            .currentOrgCode("ihobdb03")
             .organizations(Set.of(build2))
             .authorities(Set.of(client))
             .build();
@@ -131,7 +132,7 @@ public class DataLoader implements ApplicationRunner {
             .name("ThreePerson")
             .langKey("EN")
             .password(password)
-            .currentOrgCode("12345678")
+            .currentOrgCode("ihobdb03")
             .viewId(Utility.getRandomNumberString())
             .organizations(Set.of(build3))
             .authorities(Set.of(guest))

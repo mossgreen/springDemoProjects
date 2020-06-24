@@ -29,7 +29,7 @@ import java.util.UUID;
 @ToString(exclude = {"authorities","organizations"})
 @Data
 @Entity
-@Table(name = "users")
+@Table(name="users")
 @NoArgsConstructor
 @NamedEntityGraph(
     name = "user-authorities-organizations-graph",

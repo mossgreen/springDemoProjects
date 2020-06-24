@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-@Qualifier("ihobbUserDetailsService")
 public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -22,6 +21,11 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+        final List<User> users = userRepository.findAllByEmailAndActivatedIsTrue(username);
+        if (users.isEmpty()) {
+            throw new RuntimeException("Username or password are incorrect.");
+        }
         return userRepository.findAllByEmailAndActivatedIsTrue(username).get(0);
     }
 }

@@ -1,26 +1,41 @@
 package com.ihobb.gm.config;
 
+import com.ihobb.gm.DbConfig;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-public class DynamicTenantAwareRoutingDataSource extends AbstractRoutingDataSource {
+public class TenantAwareRoutingDataSource extends AbstractRoutingDataSource {
 
 //    private final Map<String, HikariDataSource> tenants;
 
-    public DynamicTenantAwareRoutingDataSource() {
+    public TenantAwareRoutingDataSource() {
         // default constructor, use default data source
         this("admin");
     }
 
-    public DynamicTenantAwareRoutingDataSource(String databaseName) {
-        final HikariDataSource dataSource = buildDataSource(databaseName);
-        DynamicDataSourceContextHolder.setDataSourceContext(dataSource);
+    public TenantAwareRoutingDataSource(String databaseName)  {
+        try {
+            final HikariDataSource dataSource = buildDataSource(databaseName);
+            DynamicDataSourceContextHolder.setDataSourceContext(dataSource);
+        } catch (Exception e) {
+
+            try {
+                // todo create database and run flyway, maybe I want a queue here, RabbitMQ?
+                DbConfig dbConfig = new DbConfig();
+                dbConfig.createDb(databaseName);
+                final HikariDataSource dataSource = buildDataSource(databaseName);
+                DynamicDataSourceContextHolder.setDataSourceContext(dataSource);
+            } catch (Exception e1) {
+                throw new RuntimeException("nonono"); //todo
+            }
+        }
     }
 
     public HikariDataSource buildDataSource(String dataBaseName) {
@@ -37,8 +52,8 @@ public class DynamicTenantAwareRoutingDataSource extends AbstractRoutingDataSour
         hikariConfigProperties.put("jdbcUrl", "jdbc:postgresql://127.0.0.1:5432/" + dataBaseName);
         hikariConfigProperties.put("driverClassName","org.postgresql.Driver");
 
-//        hikariConfigProperties.put("maximumPoolSize", 5);
-//        hikariConfigProperties.put("idleTimeout",     50000);
+        hikariConfigProperties.put("maximumPoolSize", 5);
+        hikariConfigProperties.put("idleTimeout",     50000);
         hikariConfigProperties.put("dataSourceProperties", datasourceProperties);
 
         HikariConfig hc = new HikariConfig(hikariConfigProperties);
