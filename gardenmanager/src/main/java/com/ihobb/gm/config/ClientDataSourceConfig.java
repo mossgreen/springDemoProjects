@@ -1,10 +1,8 @@
 package com.ihobb.gm.config;
 
 import com.zaxxer.hikari.HikariDataSource;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
-import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -14,9 +12,7 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaDialect;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
@@ -24,36 +20,43 @@ import java.util.Objects;
 
 @Configuration
 @EnableJpaRepositories(
-    basePackages = "com.ihobb.gm.admin",
-    entityManagerFactoryRef = "adminEntityManager",
-    transactionManagerRef = "adminTransactionManager"
+    basePackages = "com.ihobb.gm.client",
+    entityManagerFactoryRef = "clientEntityManager",
+    transactionManagerRef = "clientTransactionManager"
 )
-public class AdminDataSourceConfig {
+public class ClientDataSourceConfig {
 
-    @Bean
-    @Primary
+    //todo https://dzone.com/articles/dynamic-multi-tenancy-using-java-spring-boot-sprin
+
+//    @Bean
     @ConfigurationProperties(prefix = "spring.datasource")
-    public DataSource adminDataSource() {
-        return DataSourceBuilder.create()
-            .type(HikariDataSource.class)
-            .build();
+    public DataSource clientDataSource() {
+
+        if (DynamicDataSourceContextHolder.getDataSourceContext() == null) {
+//            return DataSourceBuilder.create()
+//                .type(HikariDataSource.class)
+//                .build();
+
+            return null;
+        } else {
+            return DynamicDataSourceContextHolder.getDataSourceContext();
+        }
     }
 
-    @Bean(name = "adminEntityManager")
-    @Primary
+    @Bean(name = "clientEntityManager")
     public LocalContainerEntityManagerFactoryBean adminEntityManagerFactory() {
 
         LocalContainerEntityManagerFactoryBean localContainerEntityManagerFactoryBean = new LocalContainerEntityManagerFactoryBean();
-        localContainerEntityManagerFactoryBean.setDataSource(adminDataSource());
+        localContainerEntityManagerFactoryBean.setDataSource(clientDataSource());
         localContainerEntityManagerFactoryBean.setPackagesToScan(packagesToScan());
-        localContainerEntityManagerFactoryBean.setPersistenceUnitName("adminPersistenceUnit"); // todo
+        localContainerEntityManagerFactoryBean.setPersistenceUnitName("clientPersistenceUnit"); // todo
         localContainerEntityManagerFactoryBean.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
         localContainerEntityManagerFactoryBean.setJpaDialect(new HibernateJpaDialect());
         localContainerEntityManagerFactoryBean.setJpaPropertyMap(hibernateProperties());
         return localContainerEntityManagerFactoryBean;
     }
 
-    @Bean(name = "adminTransactionManager")
+    @Bean(name = "clientTransactionManager")
     public PlatformTransactionManager anotherTransactionManager( LocalContainerEntityManagerFactoryBean adminEntityManager) {
         return new JpaTransactionManager(Objects.requireNonNull(adminEntityManager.getObject())); // todo handle not null
     }
@@ -72,7 +75,7 @@ public class AdminDataSourceConfig {
 
     protected String[] packagesToScan() {
         return new String[]{
-            "com.ihobb.gm.admin"
+            "com.ihobb.gm.client"
         };
     }
 }
