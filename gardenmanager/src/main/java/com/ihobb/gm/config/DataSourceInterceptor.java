@@ -25,7 +25,7 @@ public class DataSourceInterceptor extends HandlerInterceptorAdapter {
             //set data source here?
             final String orgCode = user.getCurrentOrgCode();
             TenantAwareRoutingDataSource ds = new TenantAwareRoutingDataSource(orgCode);
-            DynamicDataSourceContextHolder.setDataSourceContext(ds);
+            TenantContextHolder.setDataSourceContext(ds);
         }
 
         return super.preHandle(request, response, handler);

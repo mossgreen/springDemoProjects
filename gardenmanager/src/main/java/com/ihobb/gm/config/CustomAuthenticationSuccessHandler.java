@@ -27,7 +27,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
          * may be, it's better to redirect to /garden, only if your have the client role
          * if you don't have a proper role, should throw IllegalStateException sth
          */
-
         final boolean isAdmin = authorities.stream().anyMatch(a-> a.getAuthority().equalsIgnoreCase("ADMIN"));
 
         if (isAdmin) {
@@ -35,12 +34,10 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         } else {
             // switch datasource to the client database and get all gardens it has
             // create datasource for current client,
-
             final User user = (User) authentication.getPrincipal();
-
             final String orgCode = user.getCurrentOrgCode();
-            TenantAwareRoutingDataSource ds = new TenantAwareRoutingDataSource(orgCode);
-            DynamicDataSourceContextHolder.setDataSourceContext(ds);
+
+            TenantContextHolder.setTenant(orgCode);
         }
         new DefaultRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }

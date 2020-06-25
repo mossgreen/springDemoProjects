@@ -6,7 +6,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 import javax.sql.DataSource;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -23,7 +22,7 @@ public class TenantAwareRoutingDataSource extends AbstractRoutingDataSource {
     public TenantAwareRoutingDataSource(String databaseName)  {
         try {
             final HikariDataSource dataSource = buildDataSource(databaseName);
-            DynamicDataSourceContextHolder.setDataSourceContext(dataSource);
+            TenantContextHolder.setDataSourceContext(dataSource);
         } catch (Exception e) {
 
             try {
@@ -31,7 +30,7 @@ public class TenantAwareRoutingDataSource extends AbstractRoutingDataSource {
                 DbConfig dbConfig = new DbConfig();
                 dbConfig.createDb(databaseName);
                 final HikariDataSource dataSource = buildDataSource(databaseName);
-                DynamicDataSourceContextHolder.setDataSourceContext(dataSource);
+                TenantContextHolder.setDataSourceContext(dataSource);
             } catch (Exception e1) {
                 throw new RuntimeException("nonono"); //todo
             }
@@ -67,7 +66,7 @@ public class TenantAwareRoutingDataSource extends AbstractRoutingDataSource {
 
     @Override
     protected Object determineCurrentLookupKey() {
-        return DynamicDataSourceContextHolder.getDataSourceContext();
+        return TenantContextHolder.getDataSourceContext();
     }
 
     @Override

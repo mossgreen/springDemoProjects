@@ -8,6 +8,7 @@ import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -23,6 +24,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Configuration
+@EnableTransactionManagement
 @EnableJpaRepositories(
     basePackages = "com.ihobb.gm.admin",
     entityManagerFactoryRef = "adminEntityManager",
@@ -54,8 +56,16 @@ public class AdminDataSourceConfig {
     }
 
     @Bean(name = "adminTransactionManager")
-    public PlatformTransactionManager anotherTransactionManager( LocalContainerEntityManagerFactoryBean adminEntityManager) {
-        return new JpaTransactionManager(Objects.requireNonNull(adminEntityManager.getObject())); // todo handle not null
+    public JpaTransactionManager adminTransactionManager(@Qualifier("adminEntityManager") EntityManagerFactory emf) {
+
+        JpaTransactionManager transactionManager = new JpaTransactionManager();
+        transactionManager.setEntityManagerFactory(emf);
+        return transactionManager;
+    }
+
+    @Bean // todo why we need this
+    public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
+        return new PersistenceExceptionTranslationPostProcessor();
     }
 
 
