@@ -1,4 +1,4 @@
-package com.ihobb.gm.config;
+package com.ihobb.gm.constant;
 
 public final class Constants {
 

@@ -9,10 +9,8 @@ import com.ihobb.gm.admin.repository.UserRepository;
 import com.ihobb.gm.utility.Utility;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import java.time.Instant;
 import java.util.Set;
 import java.util.UUID;
 

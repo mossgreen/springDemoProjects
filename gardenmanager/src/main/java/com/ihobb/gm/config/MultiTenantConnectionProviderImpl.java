@@ -1,63 +1,61 @@
 package com.ihobb.gm.config;
 
-import org.hibernate.cfg.Environment;
+import com.ihobb.gm.utility.DataSourceUtil;
 import org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl;
+import org.hibernate.engine.jdbc.connections.spi.AbstractDataSourceBasedMultiTenantConnectionProviderImpl;
 import org.hibernate.engine.jdbc.connections.spi.AbstractMultiTenantConnectionProvider;
 import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
+import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-public class MultiTenantConnectionProviderImpl extends AbstractMultiTenantConnectionProvider {
+@Configuration
+public class MultiTenantConnectionProviderImpl extends AbstractDataSourceBasedMultiTenantConnectionProviderImpl {
 
-    /**
-     * The Hibernate ConnectionProvider is a factory of database connections,
-     * hence each database catalog will have its own ConnectionProvider instance.
-     */
-    public static final MultiTenantConnectionProviderImpl INSTANCE = new MultiTenantConnectionProviderImpl();
+    private static final long serialVersionUID = 1L;
+    private final Map<String, DataSource> dataSources = new HashMap<>();
 
-    private final Map<String, ConnectionProvider> connectionProviderMap = new HashMap<>();
-
-    Map<String, ConnectionProvider> getConnectionProviderMap() {
-        return connectionProviderMap;
+    @Override
+    protected DataSource selectAnyDataSource() {
+        if (dataSources.isEmpty()) {
+            final DatabaseConfigProperties db = DatabaseConfigProperties.builder()
+                .dbName("admin")
+                .url("jdbc:postgresql://127.0.0.1:5432/" + DBContextHolder.DEFAULT_TENANT_ID)
+                .build();
+            dataSources.put(DBContextHolder.DEFAULT_TENANT_ID, DataSourceUtil.createAndConfigureDataSource(db));
+        }
+        return dataSources.get(DBContextHolder.DEFAULT_TENANT_ID);
     }
 
     @Override
-    protected ConnectionProvider getAnyConnectionProvider() {
-        return connectionProviderMap.get(TenantContextHolder.DEFAULT_TENANT);
+    protected DataSource selectDataSource(String tenantIdentifier) {
+
+        tenantIdentifier = initializeTenantIfLost(tenantIdentifier);
+        if (!this.dataSources.containsKey(tenantIdentifier)) {
+
+            final DatabaseConfigProperties db = DatabaseConfigProperties.builder()
+                .dbName(tenantIdentifier)
+                .url("jdbc:postgresql://127.0.0.1:5432/"+ tenantIdentifier)
+                .build();
+            dataSources.put(DBContextHolder.DEFAULT_TENANT_ID, DataSourceUtil.createAndConfigureDataSource(db));
+        }
+
+        if (!this.dataSources.containsKey(tenantIdentifier)) {
+
+        } else {
+            throw new RuntimeException("db not found exception"); //todo
+        }
+
+        return dataSources.get(tenantIdentifier);
     }
 
-    @Override
-    protected ConnectionProvider selectConnectionProvider(String tenantIdentifier) {
-        return connectionProviderMap.get(tenantIdentifier);
+    private String initializeTenantIfLost(String tenantIdentifier) {
+        if (tenantIdentifier != DBContextHolder.getCurrentDb()) {
+            tenantIdentifier = DBContextHolder.getCurrentDb();
+        }
+        return tenantIdentifier;
     }
-
-    private void addTenantConnectionProvider(String tenantId, DataSource tenantDataSource, Properties properties) {
-
-        DatasourceConnectionProviderImpl connectionProvider = new DatasourceConnectionProviderImpl();
-        connectionProvider.setDataSource(tenantDataSource);
-        connectionProvider.configure(properties);
-
-        MultiTenantConnectionProviderImpl.INSTANCE.getConnectionProviderMap().put(tenantId, connectionProvider);
-    }
-
-//    private void addTenantConnectionProvider(String tenantId) {
-//
-//        DataSourceProvider dataSourceProvider = database()
-//            .dataSourceProvider();
-//
-//        Properties properties = properties();
-//
-//        MysqlDataSource tenantDataSource = new MysqlDataSource();
-//        tenantDataSource.setDatabaseName(tenantId);
-//        tenantDataSource.setUser(dataSourceProvider.username());
-//        tenantDataSource.setPassword(dataSourceProvider.password());
-//
-//        properties.put(Environment.DATASOURCE, dataSourceProxyType().dataSource(tenantDataSource));
-//
-//        addTenantConnectionProvider(tenantId, tenantDataSource, properties);
-//    }
-
 }

@@ -3,8 +3,7 @@ package com.ihobb.gm.admin.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ihobb.gm.baseEntity.AbstractAuditingEntity;
-import com.ihobb.gm.config.Constants;
-import lombok.Builder;
+import com.ihobb.gm.constant.Constants;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -19,10 +18,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.io.Serializable;
-import java.time.Instant;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true,exclude = {"authorities","organizations"})

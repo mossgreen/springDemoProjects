@@ -1,20 +1,14 @@
 package com.ihobb.gm.admin.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ihobb.gm.admin.repository.OrganizationRepository;
 import com.ihobb.gm.baseEntity.AbstractAuditingEntity;
-import com.ihobb.gm.config.Constants;
+import com.ihobb.gm.constant.Constants;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Parameter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -28,7 +22,6 @@ import javax.validation.constraints.Size;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.UUID;
 
 @SuperBuilder
 @EqualsAndHashCode(callSuper = true, exclude = {"users"})

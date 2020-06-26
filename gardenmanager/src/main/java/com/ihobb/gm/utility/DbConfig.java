@@ -1,4 +1,4 @@
-package com.ihobb.gm;
+package com.ihobb.gm.utility;
 
 import org.springframework.beans.factory.annotation.Value;
 

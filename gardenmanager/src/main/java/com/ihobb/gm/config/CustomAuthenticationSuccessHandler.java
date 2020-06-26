@@ -1,6 +1,8 @@
 package com.ihobb.gm.config;
 
 import com.ihobb.gm.admin.domain.User;
+import com.ihobb.gm.utility.DataSourceUtil;
+import lombok.Data;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -35,9 +37,14 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             // switch datasource to the client database and get all gardens it has
             // create datasource for current client,
             final User user = (User) authentication.getPrincipal();
-            final String orgCode = user.getCurrentOrgCode();
+            final String orgCode = user.getCurrentOrgCode(); // todo orgcode or db name
+            final DatabaseConfigProperties db = DatabaseConfigProperties.builder()
+                .dbName(orgCode)
+                .url("jdbc:postgresql://127.0.0.1:5432/" + orgCode)
+                .build();
 
-            TenantContextHolder.setTenant(orgCode);
+            DataSourceUtil.createAndConfigureDataSource(db); // todo wrong
+
         }
         new DefaultRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }

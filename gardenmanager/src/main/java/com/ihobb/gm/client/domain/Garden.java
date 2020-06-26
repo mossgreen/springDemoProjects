@@ -2,13 +2,10 @@ package com.ihobb.gm.client.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ihobb.gm.baseEntity.AbstractAuditingEntity;
-import com.ihobb.gm.config.Constants;
-import lombok.Data;
+import com.ihobb.gm.constant.Constants;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import lombok.experimental.SuperBuilder;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
