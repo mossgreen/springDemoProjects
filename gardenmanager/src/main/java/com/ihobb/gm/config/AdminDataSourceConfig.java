@@ -1,10 +1,9 @@
 package com.ihobb.gm.config;
 
-import com.zaxxer.hikari.HikariDataSource;
+import com.ihobb.gm.utility.DataSourceUtil;
 import lombok.extern.log4j.Log4j2;
+import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -30,43 +29,42 @@ import java.util.Properties;
 )
 public class AdminDataSourceConfig {
 
+    private final DbConfigProperties dataSourceProperties;
+
+    public AdminDataSourceConfig(DbConfigProperties dataSourceProperties) {
+        this.dataSourceProperties = dataSourceProperties;
+    }
+
     @Bean
     @Primary
-    @ConfigurationProperties(prefix = "spring.datasource")
     public DataSource adminDataSource() {
-        return DataSourceBuilder.create()
-            .type(HikariDataSource.class)
-            .build();
+        dataSourceProperties.setDbName("admin");
+        return DataSourceUtil.createAndConfigureDataSource(dataSourceProperties);
     }
 
     @Bean(name = "adminEntityManagerFactory")
     @Primary
     public LocalContainerEntityManagerFactoryBean adminEntityManagerFactory() {
 
-        LocalContainerEntityManagerFactoryBean entityManagerFactor = new LocalContainerEntityManagerFactoryBean();
-
-        final DatabaseConfigProperties db = DatabaseConfigProperties.builder()
-            .dbName("admin")
-            .url("jdbc:postgresql://127.0.0.1:5432/admin")
-            .build();
-        entityManagerFactor.setDataSource(adminDataSource());
-        entityManagerFactor.setPackagesToScan(packagesToScan());
-        entityManagerFactor.setPersistenceUnitName("admin-persistence-unit"); // todo
-        entityManagerFactor.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-        entityManagerFactor.setJpaDialect(new HibernateJpaDialect());
-        entityManagerFactor.setJpaProperties(hibernateProperties());
-        return entityManagerFactor;
+        LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
+        factory.setDataSource(adminDataSource());
+        factory.setPackagesToScan(packagesToScan());
+        factory.setPersistenceUnitName("admin-persistence-unit"); // todo
+        factory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+        factory.setJpaDialect(new HibernateJpaDialect());
+        factory.setJpaProperties(hibernateProperties());
+        return factory;
     }
 
     @Bean(name = "adminTransactionManager")
-    public JpaTransactionManager adminTransactionManager(@Qualifier("adminEntityManager") EntityManagerFactory emf) {
-
+    public JpaTransactionManager adminTransactionManager(
+        @Qualifier("adminEntityManagerFactory") EntityManagerFactory emf) {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(emf);
         return transactionManager;
     }
 
-    @Bean // todo why we need this
+    @Bean
     public PersistenceExceptionTranslationPostProcessor exceptionTranslation() {
         return new PersistenceExceptionTranslationPostProcessor();
     }
@@ -83,7 +81,7 @@ public class AdminDataSourceConfig {
         properties.put(org.hibernate.cfg.Environment.DIALECT, "org.hibernate.dialect.PostgreSQL94Dialect");
         properties.put(org.hibernate.cfg.Environment.SHOW_SQL, true);
         properties.put(org.hibernate.cfg.Environment.FORMAT_SQL, true);
-        properties.put(org.hibernate.cfg.Environment.HBM2DDL_AUTO, "none");
+        properties.put(Environment.HBM2DDL_AUTO, "create-drop"); // todo moss only for testing,
         return properties;
     }
 }

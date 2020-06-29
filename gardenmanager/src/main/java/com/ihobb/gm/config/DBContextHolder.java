@@ -1,7 +1,5 @@
 package com.ihobb.gm.config;
 
-import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
-
 /**
  * Thread shared context to point to the datasource which should be used. This
  * enables context switches between different clients.

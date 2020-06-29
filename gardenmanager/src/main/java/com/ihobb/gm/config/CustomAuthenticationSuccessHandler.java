@@ -1,8 +1,6 @@
 package com.ihobb.gm.config;
 
 import com.ihobb.gm.admin.domain.User;
-import com.ihobb.gm.utility.DataSourceUtil;
-import lombok.Data;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -17,6 +15,12 @@ import java.util.Collection;
 
 @Configuration
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+
+    private final DbConfigProperties dataSourceProperties;
+
+    public CustomAuthenticationSuccessHandler(DbConfigProperties dataSourceProperties) {
+        this.dataSourceProperties = dataSourceProperties;
+    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
@@ -38,13 +42,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             // create datasource for current client,
             final User user = (User) authentication.getPrincipal();
             final String orgCode = user.getCurrentOrgCode(); // todo orgcode or db name
-            final DatabaseConfigProperties db = DatabaseConfigProperties.builder()
-                .dbName(orgCode)
-                .url("jdbc:postgresql://127.0.0.1:5432/" + orgCode)
-                .build();
-
-            DataSourceUtil.createAndConfigureDataSource(db); // todo wrong
-
+            dataSourceProperties.setDbName(orgCode);
+            MultiTenantConnectionProviderImpl db = new MultiTenantConnectionProviderImpl(dataSourceProperties);
+            db.selectAnyDataSource();
         }
         new DefaultRedirectStrategy().sendRedirect(request, response, redirectUrl);
     }

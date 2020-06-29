@@ -2,12 +2,9 @@ package com.ihobb.gm.admin.controller;
 
 
 import com.ihobb.gm.admin.domain.Organization;
-import com.ihobb.gm.admin.domain.User;
 import com.ihobb.gm.admin.repository.OrganizationRepository;
-import com.ihobb.gm.admin.repository.UserRepository;
 import com.ihobb.gm.admin.service.UserService;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

@@ -1,31 +1,28 @@
 package com.ihobb.gm.config;
 
 import com.ihobb.gm.utility.DataSourceUtil;
-import org.hibernate.engine.jdbc.connections.internal.DatasourceConnectionProviderImpl;
 import org.hibernate.engine.jdbc.connections.spi.AbstractDataSourceBasedMultiTenantConnectionProviderImpl;
-import org.hibernate.engine.jdbc.connections.spi.AbstractMultiTenantConnectionProvider;
-import org.hibernate.engine.jdbc.connections.spi.ConnectionProvider;
 import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Properties;
 
 @Configuration
 public class MultiTenantConnectionProviderImpl extends AbstractDataSourceBasedMultiTenantConnectionProviderImpl {
-
     private static final long serialVersionUID = 1L;
+
+    public final DbConfigProperties dbConfigProperties;
     private final Map<String, DataSource> dataSources = new HashMap<>();
+
+    public MultiTenantConnectionProviderImpl(DbConfigProperties dataSourceProperties) {
+        this.dbConfigProperties = dataSourceProperties;
+    }
 
     @Override
     protected DataSource selectAnyDataSource() {
         if (dataSources.isEmpty()) {
-            final DatabaseConfigProperties db = DatabaseConfigProperties.builder()
-                .dbName("admin")
-                .url("jdbc:postgresql://127.0.0.1:5432/" + DBContextHolder.DEFAULT_TENANT_ID)
-                .build();
-            dataSources.put(DBContextHolder.DEFAULT_TENANT_ID, DataSourceUtil.createAndConfigureDataSource(db));
+            dataSources.put(DBContextHolder.DEFAULT_TENANT_ID, DataSourceUtil.createAndConfigureDataSource(dbConfigProperties));
         }
         return dataSources.get(DBContextHolder.DEFAULT_TENANT_ID);
     }
@@ -36,11 +33,8 @@ public class MultiTenantConnectionProviderImpl extends AbstractDataSourceBasedMu
         tenantIdentifier = initializeTenantIfLost(tenantIdentifier);
         if (!this.dataSources.containsKey(tenantIdentifier)) {
 
-            final DatabaseConfigProperties db = DatabaseConfigProperties.builder()
-                .dbName(tenantIdentifier)
-                .url("jdbc:postgresql://127.0.0.1:5432/"+ tenantIdentifier)
-                .build();
-            dataSources.put(DBContextHolder.DEFAULT_TENANT_ID, DataSourceUtil.createAndConfigureDataSource(db));
+            dbConfigProperties.setDbName(tenantIdentifier);
+            dataSources.put(DBContextHolder.DEFAULT_TENANT_ID, DataSourceUtil.createAndConfigureDataSource(dbConfigProperties));
         }
 
         if (!this.dataSources.containsKey(tenantIdentifier)) {

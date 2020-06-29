@@ -2,7 +2,6 @@ package com.ihobb.gm.admin.service;
 
 import com.ihobb.gm.admin.domain.User;
 import com.ihobb.gm.admin.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
