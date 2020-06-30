@@ -1,11 +1,13 @@
 package com.ihobb.gm.config;
 
+import com.ihobb.gm.utility.DbConfigProperties;
 import org.hibernate.MultiTenancyStrategy;
 import org.hibernate.cfg.Environment;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
 import org.hibernate.engine.jdbc.connections.spi.MultiTenantConnectionProvider;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
@@ -28,16 +30,11 @@ import java.util.Objects;
 @EnableTransactionManagement
 public class TenantDataSourceConfig {
 
-    private final DbConfigProperties dataSourceProperties;
-
-    public TenantDataSourceConfig(DbConfigProperties dataSourceProperties) {
-        this.dataSourceProperties = dataSourceProperties;
-    }
 
     @Bean(name = "multiTenantConnectionProvider")
     @ConditionalOnBean(name = "adminEntityManagerFactory")
     public MultiTenantConnectionProvider multiTenantConnectionProvider() {
-        return new MultiTenantConnectionProviderImpl(dataSourceProperties);
+        return new MultiTenantConnectionProviderImpl();
     }
 
     @Bean(name = "currentTenantIdentifierResolver")

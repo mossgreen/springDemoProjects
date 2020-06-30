@@ -1,28 +1,35 @@
 package com.ihobb.gm.config;
 
 import com.ihobb.gm.utility.DataSourceUtil;
+import lombok.extern.log4j.Log4j2;
 import org.hibernate.engine.jdbc.connections.spi.AbstractDataSourceBasedMultiTenantConnectionProviderImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.annotation.Configuration;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
+@Log4j2
 @Configuration
 public class MultiTenantConnectionProviderImpl extends AbstractDataSourceBasedMultiTenantConnectionProviderImpl {
     private static final long serialVersionUID = 1L;
 
-    public final DbConfigProperties dbConfigProperties;
     private final Map<String, DataSource> dataSources = new HashMap<>();
 
-    public MultiTenantConnectionProviderImpl(DbConfigProperties dataSourceProperties) {
-        this.dbConfigProperties = dataSourceProperties;
-    }
+    @Autowired
+    @Qualifier("adminDataSourceProperties")
+    private DataSourceProperties properties;
+
 
     @Override
-    protected DataSource selectAnyDataSource() {
+    public DataSource selectAnyDataSource() {
         if (dataSources.isEmpty()) {
-            dataSources.put(DBContextHolder.DEFAULT_TENANT_ID, DataSourceUtil.createAndConfigureDataSource(dbConfigProperties));
+
+            final DataSource ds = DataSourceUtil.createAndConfigureDataSource(properties);
+            dataSources.put(DBContextHolder.DEFAULT_TENANT_ID, ds);
         }
         return dataSources.get(DBContextHolder.DEFAULT_TENANT_ID);
     }
@@ -47,7 +54,7 @@ public class MultiTenantConnectionProviderImpl extends AbstractDataSourceBasedMu
     }
 
     private String initializeTenantIfLost(String tenantIdentifier) {
-        if (tenantIdentifier != DBContextHolder.getCurrentDb()) {
+        if (!tenantIdentifier.equals(DBContextHolder.getCurrentDb())) {
             tenantIdentifier = DBContextHolder.getCurrentDb();
         }
         return tenantIdentifier;

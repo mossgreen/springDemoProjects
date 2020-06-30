@@ -1,15 +1,11 @@
-package com.ihobb.gm.config;
+package com.ihobb.gm.utility;
 
 import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
 
 @Data
-@Configuration
-@ConfigurationProperties(DbConfigProperties.PREFIX)
 public class DbConfigProperties {
 
-    public static final String PREFIX = "spring.datasource";
+    public static final String JDBC_URL = "jdbc:postgresql://127.0.0.1:5432/";
 
     private String jdbcUrl;
     private String dbName;

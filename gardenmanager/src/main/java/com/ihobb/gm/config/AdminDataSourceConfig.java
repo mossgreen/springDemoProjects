@@ -1,9 +1,11 @@
 package com.ihobb.gm.config;
 
-import com.ihobb.gm.utility.DataSourceUtil;
+import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.log4j.Log4j2;
 import org.hibernate.cfg.Environment;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -29,17 +31,19 @@ import java.util.Properties;
 )
 public class AdminDataSourceConfig {
 
-    private final DbConfigProperties dataSourceProperties;
-
-    public AdminDataSourceConfig(DbConfigProperties dataSourceProperties) {
-        this.dataSourceProperties = dataSourceProperties;
+    @Bean(name = "adminDataSourceProperties")
+    @Primary
+    @ConfigurationProperties("spring.datasource")
+    public DataSourceProperties adminDataSourceProperties() {
+        return new DataSourceProperties();
     }
 
-    @Bean
+    @Bean(name = "adminDataSource")
     @Primary
     public DataSource adminDataSource() {
-        dataSourceProperties.setDbName("admin");
-        return DataSourceUtil.createAndConfigureDataSource(dataSourceProperties);
+        return adminDataSourceProperties()
+            .initializeDataSourceBuilder()
+            .type(HikariDataSource.class).build();
     }
 
     @Bean(name = "adminEntityManagerFactory")

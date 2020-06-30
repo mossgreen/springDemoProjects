@@ -6,6 +6,7 @@ import com.ihobb.gm.admin.domain.User;
 import com.ihobb.gm.admin.repository.AuthorityRepository;
 import com.ihobb.gm.admin.repository.OrganizationRepository;
 import com.ihobb.gm.admin.repository.UserRepository;
+import com.ihobb.gm.config.MultiTenantConnectionProviderImpl;
 import com.ihobb.gm.utility.Utility;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
@@ -139,5 +140,9 @@ public class DataLoader implements ApplicationRunner {
         userRepository.save(user1);
         userRepository.save(user2);
         userRepository.save(user3);
+
+        // ---
+
+
     }
 }

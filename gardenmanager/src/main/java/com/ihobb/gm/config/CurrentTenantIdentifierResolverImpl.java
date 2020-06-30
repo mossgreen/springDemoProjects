@@ -6,11 +6,11 @@ public class CurrentTenantIdentifierResolverImpl implements CurrentTenantIdentif
 
     @Override
     public String resolveCurrentTenantIdentifier() {
-        String tenant = DBContextHolder.getCurrentDb();
-        if (tenant == null || tenant.length() < 1) {
+        String currentTenant = DBContextHolder.getCurrentDb();
+        if (currentTenant == null || currentTenant.length() < 1) {
             return DBContextHolder.DEFAULT_TENANT_ID;
         } else {
-            return tenant;
+            return currentTenant;
         }
     }
 

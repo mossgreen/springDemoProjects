@@ -1,6 +1,5 @@
 package com.ihobb.gm.utility;
 
-import com.ihobb.gm.config.DbConfigProperties;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.log4j.Log4j2;
 
