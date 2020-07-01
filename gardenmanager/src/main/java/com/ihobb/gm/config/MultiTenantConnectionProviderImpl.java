@@ -5,8 +5,10 @@ import lombok.extern.log4j.Log4j2;
 import org.hibernate.engine.jdbc.connections.spi.AbstractDataSourceBasedMultiTenantConnectionProviderImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -18,16 +20,16 @@ public class MultiTenantConnectionProviderImpl extends AbstractDataSourceBasedMu
     private static final long serialVersionUID = 1L;
 
     private final Map<String, DataSource> dataSources = new HashMap<>();
+    private final DbConfigProperties properties;
 
-    @Autowired
-    @Qualifier("adminDataSourceProperties")
-    private DataSourceProperties properties;
-
+    public MultiTenantConnectionProviderImpl(DbConfigProperties properties) {
+        this.properties = properties;
+    }
 
     @Override
     public DataSource selectAnyDataSource() {
-        if (dataSources.isEmpty()) {
 
+        if (dataSources.isEmpty()) {
             final DataSource ds = DataSourceUtil.createAndConfigureDataSource(properties);
             dataSources.put(DBContextHolder.DEFAULT_TENANT_ID, ds);
         }
@@ -39,18 +41,16 @@ public class MultiTenantConnectionProviderImpl extends AbstractDataSourceBasedMu
 
         tenantIdentifier = initializeTenantIfLost(tenantIdentifier);
         if (!this.dataSources.containsKey(tenantIdentifier)) {
-
-            dbConfigProperties.setDbName(tenantIdentifier);
-            dataSources.put(DBContextHolder.DEFAULT_TENANT_ID, DataSourceUtil.createAndConfigureDataSource(dbConfigProperties));
+            properties.setDbName(tenantIdentifier);
+            final DataSource ds = DataSourceUtil.createAndConfigureDataSource(properties);
+            dataSources.put(tenantIdentifier, ds);
         }
 
         if (!this.dataSources.containsKey(tenantIdentifier)) {
-
-        } else {
             throw new RuntimeException("db not found exception"); //todo
+        } else {
+            return dataSources.get(tenantIdentifier);
         }
-
-        return dataSources.get(tenantIdentifier);
     }
 
     private String initializeTenantIfLost(String tenantIdentifier) {

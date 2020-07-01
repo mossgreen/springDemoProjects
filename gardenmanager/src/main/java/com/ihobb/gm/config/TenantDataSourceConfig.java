@@ -1,6 +1,5 @@
 package com.ihobb.gm.config;
 
-import com.ihobb.gm.utility.DbConfigProperties;
 import org.hibernate.MultiTenancyStrategy;
 import org.hibernate.cfg.Environment;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
@@ -30,11 +29,18 @@ import java.util.Objects;
 @EnableTransactionManagement
 public class TenantDataSourceConfig {
 
+    private final DataSourceProperties properties;
+
+    public TenantDataSourceConfig(DataSourceProperties properties) {
+        this.properties = properties;
+    }
 
     @Bean(name = "multiTenantConnectionProvider")
     @ConditionalOnBean(name = "adminEntityManagerFactory")
     public MultiTenantConnectionProvider multiTenantConnectionProvider() {
-        return new MultiTenantConnectionProviderImpl();
+
+        DbConfigProperties configProperties = new DbConfigProperties(properties);
+        return new MultiTenantConnectionProviderImpl(configProperties);
     }
 
     @Bean(name = "currentTenantIdentifierResolver")

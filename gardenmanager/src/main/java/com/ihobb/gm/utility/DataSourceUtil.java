@@ -1,5 +1,6 @@
 package com.ihobb.gm.utility;
 
+import com.ihobb.gm.config.DbConfigProperties;
 import com.zaxxer.hikari.HikariDataSource;
 import lombok.extern.log4j.Log4j2;
 
@@ -23,9 +24,7 @@ public final class DataSourceUtil {
         String tenantConnectionPoolName = properties.getDbName() + "-connection-pool";
         ds.setPoolName(tenantConnectionPoolName);
         log.info("Configured datasource:" + properties.getDbName() + ". Connection pool name:" + tenantConnectionPoolName);
-
-        final DataSource dataSource = ds.getDataSource();
-        log.info("----" + dataSource);
+        log.info("--Configured datasource--");
         return ds;
     }
 }
