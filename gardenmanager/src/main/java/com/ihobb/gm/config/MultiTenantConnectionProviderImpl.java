@@ -1,5 +1,6 @@
 package com.ihobb.gm.config;
 
+import com.ihobb.gm.constant.Constants;
 import com.ihobb.gm.utility.DataSourceUtil;
 import lombok.extern.log4j.Log4j2;
 import org.hibernate.engine.jdbc.connections.spi.AbstractDataSourceBasedMultiTenantConnectionProviderImpl;
@@ -31,9 +32,9 @@ public class MultiTenantConnectionProviderImpl extends AbstractDataSourceBasedMu
 
         if (dataSources.isEmpty()) {
             final DataSource ds = DataSourceUtil.createAndConfigureDataSource(properties);
-            dataSources.put(DBContextHolder.DEFAULT_TENANT_ID, ds);
+            dataSources.put(Constants.DEFAULT_TENANT_ID, ds);
         }
-        return dataSources.get(DBContextHolder.DEFAULT_TENANT_ID);
+        return dataSources.get(Constants.DEFAULT_TENANT_ID);
     }
 
     @Override

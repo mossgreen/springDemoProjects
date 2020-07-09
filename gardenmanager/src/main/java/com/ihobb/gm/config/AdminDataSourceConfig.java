@@ -43,7 +43,8 @@ public class AdminDataSourceConfig {
     public DataSource adminDataSource() {
         return adminDataSourceProperties()
             .initializeDataSourceBuilder()
-            .type(HikariDataSource.class).build();
+            .type(HikariDataSource.class)
+            .build();
     }
 
     @Bean(name = "adminEntityManagerFactory")
@@ -54,7 +55,7 @@ public class AdminDataSourceConfig {
         factory.setDataSource(adminDataSource());
         factory.setPackagesToScan(packagesToScan());
         factory.setPersistenceUnitName("admin-persistence-unit"); // todo
-        factory.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+        factory.setJpaVendorAdapter(hibernateJpaVendorAdapter());
         factory.setJpaDialect(new HibernateJpaDialect());
         factory.setJpaProperties(hibernateProperties());
         return factory;
@@ -75,7 +76,8 @@ public class AdminDataSourceConfig {
 
     protected String[] packagesToScan() {
         return new String[]{
-            "com.ihobb.gm.admin"
+            "com.ihobb.gm.admin",
+            "com.ihobb.gm.auth"
         };
     }
 
@@ -87,5 +89,10 @@ public class AdminDataSourceConfig {
         properties.put(org.hibernate.cfg.Environment.FORMAT_SQL, true);
         properties.put(Environment.HBM2DDL_AUTO, "create-drop"); // todo moss only for testing,
         return properties;
+    }
+
+    @Bean
+    public HibernateJpaVendorAdapter hibernateJpaVendorAdapter() {
+        return new HibernateJpaVendorAdapter();
     }
 }

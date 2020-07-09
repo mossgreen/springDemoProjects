@@ -23,7 +23,7 @@ public final class DataSourceUtil {
         ds.setConnectionTimeout(20000);
         String tenantConnectionPoolName = properties.getDbName() + "-connection-pool";
         ds.setPoolName(tenantConnectionPoolName);
-        log.info("Configured datasource:" + properties.getDbName() + ". Connection pool name:" + tenantConnectionPoolName);
+        log.info("Configured datasource: {}. Connection pool name:{}",properties.getDbName(),tenantConnectionPoolName);
         log.info("--Configured datasource--");
         return ds;
     }

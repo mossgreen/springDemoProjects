@@ -1,4 +1,4 @@
-package com.ihobb.gm.admin.domain;
+package com.ihobb.gm.auth.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

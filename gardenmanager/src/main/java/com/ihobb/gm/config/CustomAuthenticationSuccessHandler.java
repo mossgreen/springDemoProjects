@@ -1,6 +1,6 @@
 package com.ihobb.gm.config;
 
-import com.ihobb.gm.admin.domain.User;
+import com.ihobb.gm.auth.domain.User;
 import com.ihobb.gm.utility.DataSourceUtil;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.context.annotation.Configuration;

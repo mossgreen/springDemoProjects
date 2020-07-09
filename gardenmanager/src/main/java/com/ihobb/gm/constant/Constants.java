@@ -11,6 +11,8 @@ public final class Constants {
     public static final String DEFAULT_LANGUAGE = "en";
     public static final String ANONYMOUS_USER = "anonymoususer";
 
+    public static final String DEFAULT_TENANT_ID = "admin";
+
     private Constants() throws IllegalAccessException {
         throw new IllegalAccessException("No instance available");
     }

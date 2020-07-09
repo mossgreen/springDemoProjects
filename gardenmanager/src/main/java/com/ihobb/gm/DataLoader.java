@@ -1,13 +1,16 @@
 package com.ihobb.gm;
 
-import com.ihobb.gm.admin.domain.Authority;
+import com.ihobb.gm.auth.domain.Authority;
 import com.ihobb.gm.admin.domain.Organization;
-import com.ihobb.gm.admin.domain.User;
+import com.ihobb.gm.auth.domain.User;
 import com.ihobb.gm.admin.repository.AuthorityRepository;
 import com.ihobb.gm.admin.repository.OrganizationRepository;
 import com.ihobb.gm.admin.repository.UserRepository;
 import com.ihobb.gm.config.MultiTenantConnectionProviderImpl;
 import com.ihobb.gm.utility.Utility;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Component;
 import java.util.Set;
 import java.util.UUID;
 
+@Data
 @Component
 public class DataLoader implements ApplicationRunner {
 

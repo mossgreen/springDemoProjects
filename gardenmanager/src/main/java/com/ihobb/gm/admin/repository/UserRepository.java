@@ -1,6 +1,6 @@
 package com.ihobb.gm.admin.repository;
 
-import com.ihobb.gm.admin.domain.User;
+import com.ihobb.gm.auth.domain.User;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

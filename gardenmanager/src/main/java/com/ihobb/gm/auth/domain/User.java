@@ -1,7 +1,9 @@
-package com.ihobb.gm.admin.domain;
+package com.ihobb.gm.auth.domain;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.ihobb.gm.admin.domain.Organization;
+import com.ihobb.gm.auth.domain.Authority;
 import com.ihobb.gm.baseEntity.AbstractAuditingEntity;
 import com.ihobb.gm.constant.Constants;
 import lombok.Data;

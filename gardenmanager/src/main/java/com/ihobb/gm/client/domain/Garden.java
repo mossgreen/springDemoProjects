@@ -3,6 +3,7 @@ package com.ihobb.gm.client.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ihobb.gm.baseEntity.AbstractAuditingEntity;
 import com.ihobb.gm.constant.Constants;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -15,8 +16,8 @@ import java.io.Serializable;
 
 @EqualsAndHashCode(callSuper = true)
 @SuperBuilder
-//@Data
-//@Entity
+@Data
+@Entity
 @Table(name = "garden")
 @NoArgsConstructor
 public class Garden extends AbstractAuditingEntity implements Serializable {

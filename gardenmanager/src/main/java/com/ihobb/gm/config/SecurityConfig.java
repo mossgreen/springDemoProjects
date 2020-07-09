@@ -1,6 +1,7 @@
 package com.ihobb.gm.config;
 
-import com.ihobb.gm.admin.service.UserService;
+import com.ihobb.gm.admin.service.AdminUserService;
+import com.ihobb.gm.admin.service.AdminUserServiceImpl;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,9 +13,9 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
-    private final UserService userService;
+    private final AdminUserService userService;
 
-    public SecurityConfig(AuthenticationSuccessHandler authenticationSuccessHandler, UserService userService) {
+    public SecurityConfig(AuthenticationSuccessHandler authenticationSuccessHandler, AdminUserServiceImpl userService) {
         this.authenticationSuccessHandler = authenticationSuccessHandler;
         this.userService = userService;
     }
