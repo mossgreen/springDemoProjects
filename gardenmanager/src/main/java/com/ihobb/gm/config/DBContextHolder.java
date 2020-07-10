@@ -1,5 +1,6 @@
 package com.ihobb.gm.config;
 
+import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 /**
@@ -8,7 +9,7 @@ import org.springframework.util.Assert;
  */
 public class DBContextHolder {
 
-    private static final ThreadLocal<String> TENANT_CONTEXT = new ThreadLocal<>();
+    public static final ThreadLocal<String> TENANT_CONTEXT = new ThreadLocal<>();
 
     public static void setCurrentDb(String dbName) {
 

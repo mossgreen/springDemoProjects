@@ -6,11 +6,12 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Log4j2
-//@Service
+@Service
 public class JwtUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
@@ -21,7 +22,7 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        final List<User> users = userRepository.findAllByEmailAndActivatedIsTrue(username);
+        final List<User> users = userRepository.findAllByNameAndActivatedIsTrue(username);
 
         if (users.isEmpty()) {
             log.info("Failed to fetch user by name: {}, no result.", username);

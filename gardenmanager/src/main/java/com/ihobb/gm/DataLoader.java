@@ -35,6 +35,8 @@ public class DataLoader implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
 
+        final String password = "c66f5610-ba10-465d-8104-3f08e938daca6881090f-e9c1-4e0e-b79a-";
+
         final Authority admin = Authority.builder()
             .name("ADMIN")
             .build();
@@ -85,7 +87,7 @@ public class DataLoader implements ApplicationRunner {
         organizationRepository.save(build2);
         organizationRepository.save(build3);
 
-        String password = UUID.randomUUID().toString().concat(UUID.randomUUID().toString()).substring(0, 60);
+//        String password = UUID.randomUUID().toString().concat(UUID.randomUUID().toString()).substring(0, 60);
 
         final User user1 = User.builder()
             .activated(Boolean.TRUE)

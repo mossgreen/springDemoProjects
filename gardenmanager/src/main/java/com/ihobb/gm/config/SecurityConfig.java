@@ -1,23 +1,24 @@
 package com.ihobb.gm.config;
 
-import com.ihobb.gm.admin.service.AdminUserService;
-import com.ihobb.gm.admin.service.AdminUserServiceImpl;
-import org.springframework.context.annotation.Configuration;
+import com.ihobb.gm.admin.service.UserService;
+import com.ihobb.gm.admin.service.UserServiceImpl;
+import com.ihobb.gm.security.JwtUserDetailsService;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-@Configuration
+//@Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
-    private final AdminUserService userService;
+//    private final UserService userService;
+    private JwtUserDetailsService jwtUserDetailsService;
 
-    public SecurityConfig(AuthenticationSuccessHandler authenticationSuccessHandler, AdminUserServiceImpl userService) {
+    public SecurityConfig(AuthenticationSuccessHandler authenticationSuccessHandler, JwtUserDetailsService jwtUserDetailsService) {
         this.authenticationSuccessHandler = authenticationSuccessHandler;
-        this.userService = userService;
+        this.jwtUserDetailsService = jwtUserDetailsService;
     }
 
     @Override
@@ -34,6 +35,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(NoOpPasswordEncoder.getInstance()); // todo replace encoder
+        auth.userDetailsService(jwtUserDetailsService).passwordEncoder(NoOpPasswordEncoder.getInstance()); // todo replace encoder
     }
 }

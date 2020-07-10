@@ -1,5 +1,7 @@
 package com.ihobb.gm.config;
 
+import ch.qos.logback.core.db.dialect.DBUtil;
+import com.ihobb.gm.utility.DataSourceUtil;
 import org.hibernate.MultiTenancyStrategy;
 import org.hibernate.cfg.Environment;
 import org.hibernate.context.spi.CurrentTenantIdentifierResolver;
@@ -39,7 +41,9 @@ public class ClientDataSourceConfig {
 
     @Bean
     public DataSource getClientDataSource() {
-        return new ClientDataSourceRouter();
+
+        final ClientDataSourceRouter router = new ClientDataSourceRouter(dataSourceProperties);
+        return router;
     }
 
     @Bean

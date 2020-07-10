@@ -15,4 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @EntityGraph(value = "user-authorities-organizations-graph", type = EntityGraph.EntityGraphType.FETCH)
     List<User> findAllByEmailAndActivatedIsTrue(String email);
 
+    @EntityGraph(value = "user-authorities-organizations-graph", type = EntityGraph.EntityGraphType.FETCH)
+    List<User> findAllByNameAndActivatedIsTrue(String username);
+
 }

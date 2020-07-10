@@ -1,16 +1,22 @@
 package com.ihobb.gm.security;
 
 import com.ihobb.gm.admin.domain.Organization;
-import com.ihobb.gm.admin.service.AdminUserService;
-import com.ihobb.gm.admin.service.AdminUserServiceImpl;
+import com.ihobb.gm.admin.service.OrganizationService;
+import com.ihobb.gm.admin.service.OrganizationServiceImpl;
+import com.ihobb.gm.admin.service.UserService;
+import com.ihobb.gm.admin.service.UserServiceImpl;
 import com.ihobb.gm.config.DBContextHolder;
 import com.ihobb.gm.constant.JWTConstants;
 import com.ihobb.gm.utility.JwtTokenUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -19,19 +25,21 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
 
-//@Component
+@Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtUserDetailsService jwtUserDetailsService;
     private final JwtTokenUtil jwtTokenUtil;
-    private final AdminUserService userService;
+    private final UserService userService;
+    private final OrganizationService organizationService;
 
-    @Autowired
-    public JwtAuthenticationFilter(JwtUserDetailsService jwtUserDetailsService, JwtTokenUtil jwtTokenUtil, AdminUserServiceImpl userService) {
+    public JwtAuthenticationFilter(JwtUserDetailsService jwtUserDetailsService, JwtTokenUtil jwtTokenUtil, UserServiceImpl userService, OrganizationServiceImpl organizationService) {
         this.jwtUserDetailsService = jwtUserDetailsService;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userService = userService;
+        this.organizationService = organizationService;
     }
 
     @Override
@@ -47,7 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 username = jwtTokenUtil.getUsernameFromToken(authToken);
                 orgcode = jwtTokenUtil.getAudienceFromToken(authToken);
-                Organization organization = userService.fetchOrganizationByCode(orgcode);
+                Organization organization = organizationService.fetchOrganizationByCode(orgcode);
                 if(null == organization){
                     logger.error("An error during getting org code");
                     throw new BadCredentialsException("Invalid org code.");
@@ -63,5 +71,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } else {
             logger.warn("Couldn't find bearer string, will ignore the header");
         }
+
+        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
+            if (jwtTokenUtil.validateToken(authToken, userDetails)) {
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                logger.info("authenticated user " + username + ", setting security context");
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        }
+
+
+        filterChain.doFilter(request, response);
+
     }
 }

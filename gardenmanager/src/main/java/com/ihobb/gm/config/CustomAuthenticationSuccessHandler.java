@@ -12,10 +12,11 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.IOException;
 import java.util.Collection;
 
-@Configuration
+//@Configuration
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
 
     private final DataSourceProperties properties;
@@ -47,7 +48,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
             DbConfigProperties configProperties = new DbConfigProperties(properties);
             configProperties.setDbName(orgCode);
-            DataSourceUtil.createAndConfigureDataSource(configProperties);
+            final DataSource dataSource = DataSourceUtil.createAndConfigureDataSource(configProperties);
             DBContextHolder.setCurrentDb(orgCode);
         }
         new DefaultRedirectStrategy().sendRedirect(request, response, redirectUrl);
