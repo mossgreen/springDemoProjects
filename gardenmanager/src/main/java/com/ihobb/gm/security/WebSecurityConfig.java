@@ -1,10 +1,9 @@
 package com.ihobb.gm.security;
 
 import com.ihobb.gm.admin.service.OrganizationService;
-import com.ihobb.gm.admin.service.OrganizationServiceImpl;
 import com.ihobb.gm.admin.service.UserService;
-import com.ihobb.gm.admin.service.UserServiceImpl;
 import com.ihobb.gm.utility.JwtTokenUtil;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +21,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.filter.OncePerRequestFilter;
 
+@Log4j2
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -63,7 +64,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public JwtAuthenticationFilter authenticationTokenFilterBean() {
-        return new JwtAuthenticationFilter(jwtUserDetailsService,jwtTokenUtil, (UserServiceImpl) userService, (OrganizationServiceImpl) organizationService);
+        return new JwtAuthenticationFilter(jwtUserDetailsService,jwtTokenUtil, userService, organizationService);
     }
 
     @Bean
@@ -91,6 +92,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return bean;
     }
 
+    /**
+     *  We do this to ensure our Filter is only loaded once into Application Context
+     *
+     */
+    @Bean(name = "authenticationFilterRegistration")
+    public FilterRegistrationBean<OncePerRequestFilter> JwtAuthenticationFilterRegistration() {
+        final FilterRegistrationBean<OncePerRequestFilter>  filterRegistrationBean = new FilterRegistrationBean<>();
+        filterRegistrationBean.setFilter(authenticationTokenFilterBean());
+        filterRegistrationBean.setEnabled(false);
+        return filterRegistrationBean;
+    }
+
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors()
@@ -99,6 +113,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/admin/**").authenticated()
+                .antMatchers("/garden/**").authenticated()
                 .and()
             .exceptionHandling()
                 .authenticationEntryPoint(unauthorizedHandler)

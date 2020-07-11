@@ -16,7 +16,7 @@ public class GardenController {
 
     private final GardenService gardenService;
 
-    public GardenController(GardenServiceImpl gardenService) {
+    public GardenController(GardenService gardenService) {
         this.gardenService = gardenService;
     }
 

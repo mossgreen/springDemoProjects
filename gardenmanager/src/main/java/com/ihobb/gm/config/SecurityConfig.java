@@ -13,8 +13,7 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AuthenticationSuccessHandler authenticationSuccessHandler;
-//    private final UserService userService;
-    private JwtUserDetailsService jwtUserDetailsService;
+    private final JwtUserDetailsService jwtUserDetailsService;
 
     public SecurityConfig(AuthenticationSuccessHandler authenticationSuccessHandler, JwtUserDetailsService jwtUserDetailsService) {
         this.authenticationSuccessHandler = authenticationSuccessHandler;

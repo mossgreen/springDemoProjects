@@ -5,6 +5,8 @@ import com.ihobb.gm.admin.service.OrganizationService;
 import com.ihobb.gm.admin.service.OrganizationServiceImpl;
 import com.ihobb.gm.admin.service.UserService;
 import com.ihobb.gm.admin.service.UserServiceImpl;
+import com.ihobb.gm.auth.domain.Authority;
+import com.ihobb.gm.auth.domain.User;
 import com.ihobb.gm.config.DBContextHolder;
 import com.ihobb.gm.constant.JWTConstants;
 import com.ihobb.gm.utility.JwtTokenUtil;
@@ -26,6 +28,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Set;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -35,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final UserService userService;
     private final OrganizationService organizationService;
 
-    public JwtAuthenticationFilter(JwtUserDetailsService jwtUserDetailsService, JwtTokenUtil jwtTokenUtil, UserServiceImpl userService, OrganizationServiceImpl organizationService) {
+    public JwtAuthenticationFilter(JwtUserDetailsService jwtUserDetailsService, JwtTokenUtil jwtTokenUtil, UserService userService, OrganizationService organizationService) {
         this.jwtUserDetailsService = jwtUserDetailsService;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userService = userService;
@@ -44,6 +47,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+
+        logger.info("------------------");
+        logger.info(request.getRequestURL().toString());
+
 
         String header = request.getHeader(JWTConstants.HEADER_STRING);
         String username = null;
@@ -75,15 +82,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
             if (jwtTokenUtil.validateToken(authToken, userDetails)) {
-                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN")));
+
+                User user = userService.fetchUserByName(username);
+
+                final Set<Authority> authorities = user.getAuthorities();
+
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, authorities);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 logger.info("authenticated user " + username + ", setting security context");
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
 
-
         filterChain.doFilter(request, response);
-
     }
 }
