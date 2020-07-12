@@ -2,9 +2,7 @@ package com.ihobb.gm.security;
 
 import com.ihobb.gm.admin.domain.Organization;
 import com.ihobb.gm.admin.service.OrganizationService;
-import com.ihobb.gm.admin.service.OrganizationServiceImpl;
 import com.ihobb.gm.admin.service.UserService;
-import com.ihobb.gm.admin.service.UserServiceImpl;
 import com.ihobb.gm.auth.domain.Authority;
 import com.ihobb.gm.auth.domain.User;
 import com.ihobb.gm.config.DBContextHolder;
@@ -12,10 +10,8 @@ import com.ihobb.gm.constant.JWTConstants;
 import com.ihobb.gm.utility.JwtTokenUtil;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.SignatureException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -27,7 +23,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Set;
 
 @Component
@@ -58,22 +53,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String authToken = null;
 
         if (null != header && header.startsWith(JWTConstants.TOKEN_PREFIX)) {
-            authToken = header.replace(JWTConstants.TOKEN_PREFIX,"");
+            authToken = header.replace(JWTConstants.TOKEN_PREFIX, "");
             try {
                 username = jwtTokenUtil.getUsernameFromToken(authToken);
-                orgcode = jwtTokenUtil.getAudienceFromToken(authToken);
+                orgcode = jwtTokenUtil.getOrgFromToken(authToken);
                 Organization organization = organizationService.fetchOrganizationByCode(orgcode);
-                if(null == organization){
+                if (null == organization) {
                     logger.error("An error during getting org code");
                     throw new BadCredentialsException("Invalid org code.");
                 }
-                DBContextHolder.setCurrentDb(orgcode);
+//                DBContextHolder.setCurrentDb(orgcode);
             } catch (IllegalArgumentException ex) {
                 logger.error("An error during getting username from token", ex);
             } catch (ExpiredJwtException ex) {
                 logger.warn("The token is expired and not valid anymore", ex);
-            } catch(SignatureException ex){
-                logger.error("Authentication Failed. Username or Password not valid.",ex);
+            } catch (SignatureException ex) {
+                logger.error("Authentication Failed. Username or Password not valid.", ex);
             }
         } else {
             logger.warn("Couldn't find bearer string, will ignore the header");

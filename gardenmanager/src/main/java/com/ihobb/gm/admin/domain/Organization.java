@@ -22,7 +22,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString(exclude = {"users"})
-public class Organization  extends AbstractAuditingEntity implements Serializable {
+public class Organization extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -34,7 +34,7 @@ public class Organization  extends AbstractAuditingEntity implements Serializabl
 
     @Pattern(regexp = Constants.LOGIN_REGEX)
     @Size(min = 1, max = 50)
-    @Column(name = "org_name", length = 50, unique = true, nullable = false)
+    @Column(name = "org_name", length = 100, unique = true, nullable = false)
     private String name;
 
     @Pattern(regexp = Constants.CODE_REGEX)

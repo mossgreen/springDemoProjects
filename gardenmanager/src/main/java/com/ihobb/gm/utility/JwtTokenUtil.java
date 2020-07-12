@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.function.Function;
 
 @Component
@@ -19,6 +20,14 @@ public class JwtTokenUtil implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public String getUsernameFromToken(String token) {
+        return (String) getAllClaimsFromToken(token).get("usr");
+    }
+
+    public String getOrgFromToken(String token) {
+        return (String) getAllClaimsFromToken(token).get("org");
+    }
+
+    public String getSubjectFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
@@ -51,14 +60,19 @@ public class JwtTokenUtil implements Serializable {
         return doGenerateToken(userName,tenantOrClientId);
     }
 
-    private String doGenerateToken(String subject, String tenantOrClientId) {
+    private String doGenerateToken(String username, String tenantOrClientId) {
 
-        Claims claims = Jwts.claims().setSubject(subject).setAudience(tenantOrClientId);
-        claims.put("scopes", Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN")));
+//        Claims claims = Jwts.claims().setSubject(username).setAudience(tenantOrClientId);
+//        claims.put("scopes", Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN")));
+
+        final HashMap<String, Object> claims = new HashMap<>();
+        claims.put("usr", username);
+        claims.put("org", tenantOrClientId);
 
         return Jwts.builder()
                 .setClaims(claims)
-                .setIssuer("system")
+//                .addClaims(map)
+                .setIssuer("ihobb.example.com")
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWTConstants.ACCESS_TOKEN_VALIDITY_SECONDS * 1000))
                 .signWith(SignatureAlgorithm.HS256, JWTConstants.SIGNING_KEY)

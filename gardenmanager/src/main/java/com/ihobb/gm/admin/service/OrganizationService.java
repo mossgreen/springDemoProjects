@@ -8,4 +8,6 @@ public interface OrganizationService {
     Organization fetchOrganizationByCode(String orgCode);
 
     List<Organization> fetchAll();
+
+    Organization addOrganization(String description);
 }

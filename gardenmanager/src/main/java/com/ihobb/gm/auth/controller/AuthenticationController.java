@@ -44,7 +44,7 @@ public class AuthenticationController {
 
         final String currentOrgCode = user.getCurrentOrgCode();
 
-        DBContextHolder.setCurrentDb(currentOrgCode);
+//        DBContextHolder.setCurrentDb(currentOrgCode);
 
         final Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(userLoginDTO.getUserName(), userLoginDTO.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
