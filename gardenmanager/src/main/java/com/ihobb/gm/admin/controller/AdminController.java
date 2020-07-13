@@ -22,12 +22,12 @@ public class AdminController {
         this.organizationService = organizationService;
     }
 
-    @GetMapping
+    @GetMapping(name = "/organization")
     List<Organization> fetchAllOrganizations() {
         return organizationService.fetchAll();
     }
 
-    @PostMapping
+    @PostMapping(name = "/organization")
     Organization createOrganization() {
         return organizationService.addOrganization("hihi");
     }
