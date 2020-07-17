@@ -51,7 +51,7 @@ public class JwtTokenUtil implements Serializable {
                 .getBody();
     }
 
-    private Boolean isTokenExpired(String token) {
+    public Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }
@@ -79,8 +79,25 @@ public class JwtTokenUtil implements Serializable {
                 .compact();
     }
 
+    private String doGenerateToken(Claims claims) {
+        return Jwts.builder().setClaims(claims).signWith(SignatureAlgorithm.HS256, JWTConstants.SIGNING_KEY)
+            .compact();
+    }
+
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = getUsernameFromToken(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+    }
+
+    public String refreshToken(String token) {
+        String refreshedToken;
+        try {
+            Claims claims = getAllClaimsFromToken(token);
+            claims.put("created", new Date());
+            refreshedToken = doGenerateToken(claims);
+        } catch (Exception e) {
+            refreshedToken = null;
+        }
+        return refreshedToken;
     }
 }

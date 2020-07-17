@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -57,10 +58,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
     }
 
-//    @Bean
-//    public JwtAuthenticationFilter authenticationTokenFilterBean() {
-//        return new JwtAuthenticationFilter(jwtUserDetailsService,jwtTokenUtil, userService, organizationService);
-//    }
 
     @Bean
     public FilterRegistrationBean<CorsFilter> platformCorsFilter() {
@@ -68,6 +65,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
         config.addAllowedOrigin("*");
+//        config.addAllowedOrigin("http:localhost:8888");
         config.addAllowedHeader("Authorization");
         config.addAllowedHeader("Content-Type");
         config.addAllowedHeader("Accept");
@@ -80,31 +78,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         source.registerCorsConfiguration("/**", config);
 
         final CorsFilter corsFilter = new CorsFilter(source);
-//        FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(new CorsFilter(source));
         FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>();
         bean.setFilter(corsFilter);
         bean.setOrder(-110);
         return bean;
     }
 
-    /**
-     *  We do this to ensure our Filter is only loaded once into Application Context
-     *
-     */
-//    @Bean(name = "authenticationFilterRegistration")
-//    public FilterRegistrationBean<OncePerRequestFilter> JwtAuthenticationFilterRegistration() {
-//        final FilterRegistrationBean<OncePerRequestFilter>  filterRegistrationBean = new FilterRegistrationBean<>();
-//        filterRegistrationBean.setFilter(authenticationTokenFilterBean());
-//        filterRegistrationBean.setEnabled(false);
-//        return filterRegistrationBean;
-//    }
-
-
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.cors()
                 .and()
-            .csrf().disable()
+            .csrf().disable() //todo
             .addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class )
             .logout()
                 .logoutUrl("/logout")

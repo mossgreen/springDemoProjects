@@ -20,6 +20,7 @@ public class JwtUserDetailsService implements UserDetailsService {
         this.userRepository = userRepository;
     }
 
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         final List<User> users = userRepository.findAllByNameAndActivatedIsTrue(username);
