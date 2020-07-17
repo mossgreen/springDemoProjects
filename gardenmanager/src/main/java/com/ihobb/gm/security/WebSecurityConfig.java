@@ -23,25 +23,20 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.annotation.Resource;
+
 @Log4j2
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final JwtUserDetailsService jwtUserDetailsService;
-    private final JwtAuthenticationEntryPoint unauthorizedHandler;
-    private final JwtTokenUtil jwtTokenUtil;
-    private final UserService userService;
-    private final OrganizationService organizationService;
-
-    public WebSecurityConfig(JwtUserDetailsService jwtUserDetailsService, JwtAuthenticationEntryPoint unauthorizedHandler, JwtTokenUtil jwtTokenUtil, UserService userService, OrganizationService organizationService) {
-        this.jwtUserDetailsService = jwtUserDetailsService;
-        this.unauthorizedHandler = unauthorizedHandler;
-        this.jwtTokenUtil = jwtTokenUtil;
-        this.userService = userService;
-        this.organizationService = organizationService;
-    }
+    @Resource
+    private JwtUserDetailsService jwtUserDetailsService;
+    @Resource
+    private JwtAuthenticationEntryPoint unauthorizedHandler;
+    @Resource
+    private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Override
     @Bean
@@ -62,10 +57,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
     }
 
-    @Bean
-    public JwtAuthenticationFilter authenticationTokenFilterBean() {
-        return new JwtAuthenticationFilter(jwtUserDetailsService,jwtTokenUtil, userService, organizationService);
-    }
+//    @Bean
+//    public JwtAuthenticationFilter authenticationTokenFilterBean() {
+//        return new JwtAuthenticationFilter(jwtUserDetailsService,jwtTokenUtil, userService, organizationService);
+//    }
 
     @Bean
     public FilterRegistrationBean<CorsFilter> platformCorsFilter() {
@@ -96,13 +91,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      *  We do this to ensure our Filter is only loaded once into Application Context
      *
      */
-    @Bean(name = "authenticationFilterRegistration")
-    public FilterRegistrationBean<OncePerRequestFilter> JwtAuthenticationFilterRegistration() {
-        final FilterRegistrationBean<OncePerRequestFilter>  filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(authenticationTokenFilterBean());
-        filterRegistrationBean.setEnabled(false);
-        return filterRegistrationBean;
-    }
+//    @Bean(name = "authenticationFilterRegistration")
+//    public FilterRegistrationBean<OncePerRequestFilter> JwtAuthenticationFilterRegistration() {
+//        final FilterRegistrationBean<OncePerRequestFilter>  filterRegistrationBean = new FilterRegistrationBean<>();
+//        filterRegistrationBean.setFilter(authenticationTokenFilterBean());
+//        filterRegistrationBean.setEnabled(false);
+//        return filterRegistrationBean;
+//    }
 
 
     @Override
@@ -110,6 +105,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors()
                 .and()
             .csrf().disable()
+            .addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class )
+            .logout()
+                .logoutUrl("/logout")
+//                .addLogoutHandler()// todo
+                .and()
             .authorizeRequests()
                 .antMatchers("/auth/**").permitAll()
                 .antMatchers("/admin/**").authenticated()
@@ -120,6 +120,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
             .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
     }
 }

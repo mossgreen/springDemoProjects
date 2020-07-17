@@ -5,7 +5,7 @@ import com.ihobb.gm.admin.repository.OrganizationRepository;
 import com.ihobb.gm.config.DbConfigProperties;
 import com.ihobb.gm.utility.DataSourceUtil;
 import lombok.extern.log4j.Log4j2;
-import org.flywaydb.core.Flyway;
+//import org.flywaydb.core.Flyway;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -75,8 +75,8 @@ public class OrganizationServiceImpl implements OrganizationService {
         url = Objects.requireNonNull(jdbcTemplate.getDataSource()).getConnection().getMetaData().getURL();
         log.info("jdbc url: {}", url);
 
-        Flyway flyway = Flyway.configure().dataSource(dataSource).load();
-        flyway.migrate();
+//        Flyway flyway = Flyway.configure().dataSource(dataSource).load();
+//        flyway.migrate();
 
         return url;
 
