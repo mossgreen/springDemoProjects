@@ -25,6 +25,9 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-security'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-amqp'
+
+
     implementation "io.springfox:springfox-boot-starter:3.0.0"
 //    implementation 'org.flywaydb:flyway-core'
 
@@ -38,6 +41,7 @@ dependencies {
 	}
     implementation "javax.annotation:javax.annotation-api"
 	testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation 'org.springframework.amqp:spring-rabbit-test'
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-hppc"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-hibernate5"
